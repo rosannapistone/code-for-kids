@@ -1,0 +1,15 @@
+@import "../../Assets/styles/variables.scss";
+
+.header {
+  display: flex;
+  flex-direction: column;
+  height: 3rem;
+  padding: 1rem 4rem;
+  align-items: end;
+  justify-content: center;
+  background-color: $off-white;
+
+  img {
+    height: 3rem;
+  }
+}

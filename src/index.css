@@ -1,10 +1,33 @@
+@font-face {
+  font-family: 'AlmarenaNeue';  /* Name of your font */
+  src: url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.otf') format('otf'),
+       url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.woff') format('woff'),
+       url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';  /* Name of your font */
+  src: url('./Assets/fonts/IBMPlexSans-Light.ttf') format('truetype'),
+       url('./Assets/fonts/IBMPlexSans-LightItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'AlmarenaNeue', 'IBMPlexSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh; 
+  cursor: url('./Assets/icons/Rocket.svg'), auto;
+}
+
+#root {
+height: 100%;
 }
 
 code {

@@ -1,0 +1,119 @@
+@import '../../Assets/styles/variables.scss';
+
+.landing-page {
+  background-color: $soft-pink;
+  color: $off-black;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: 4rem 4rem;
+  align-items: center;
+
+  & > .heading {
+    height: fit-content;
+    overflow: hidden; 
+    white-space: nowrap; 
+    margin: 0 auto;
+    letter-spacing: .15em; 
+    animation: 
+      typing 5s steps(50, end),
+      blink-caret .75s step-end infinite;
+  }
+  
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 80% }
+  }
+  
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: $off-black; }
+  }
+
+
+
+  & > .challange-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  
+
+    & > .challange-easy, 
+    .challange-hard,
+    .challange-game { 
+      padding: .5rem; 
+      box-sizing: border-box; 
+      border-radius: .5rem;
+      flex-basis: calc(50% - 1.5rem);
+      
+      & > .inner { 
+        height: 100%; 
+        box-sizing: border-box; 
+        padding: 1rem; 
+        text-align: center; 
+        border-radius: .5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        & > .title {
+
+        }
+        & > .age {
+          text-align: end;
+          margin: 0;
+        }
+      } 
+    } 
+
+    & > .challange-easy {
+      background-color: $turquoise; 
+      &:hover {
+        background-color: $turquoise-30;
+      }
+      & > .inner {
+        border: .3rem solid $teal;
+      }
+    }
+
+    & > .challange-hard { 
+      background-color: $peach;
+      &:hover {
+        background-color: $peach-30;
+      }
+      & > .inner { 
+        border: .3rem solid $red; 
+      } 
+    } 
+
+    & > .challange-game { 
+      background-color: #E6B7C4;
+      & > .inner { 
+        border: .3rem solid $pink; 
+        align-items: center;
+        & > .age {
+          margin-left: auto;
+        }
+        & > button {
+          display: flex;
+          justify-content: space-between;
+          border: none;
+          border-radius: .5rem;
+          padding: .5rem .8rem;
+          width: fit-content;
+          &:hover {
+            background-color: $pink;
+            color: $off-white;
+            fill: $off-white;
+          }
+          & > svg {
+            height: 1rem;
+            margin-left: 1rem;
+          }
+        }
+      } 
+    } 
+  }
+}
