@@ -1,18 +1,16 @@
-
-
 @font-face {
-  font-family: 'AlmarenaNeue';  /* Name of your font */
-  src: url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.otf') format('otf'),
-       url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.woff') format('woff'),
-       url('./Assets/fonts/AlmarenaNeue-DisplaySemiBold.woff2') format('woff2');
+  font-family: 'AlmarenaNeue';
+  src: url('/public/fonts/AlmarenaNeue-DisplaySemiBold.otf') format('opentype'),
+       url('/public/fonts/AlmarenaNeue-DisplaySemiBold.woff') format('woff'),
+       url('/public/fonts/AlmarenaNeue-DisplaySemiBold.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'IBMPlexSans';  /* Name of your font */
-  src: url('./Assets/fonts/IBMPlexSans-Light.ttf') format('truetype'),
-       url('./Assets/fonts/IBMPlexSans-LightItalic.ttf') format('truetype');
+  font-family: 'IBMPlexSans';
+  src: url('/public/fonts/IBMPlexSans-Light.ttf') format('truetype'),
+       url('/public/fonts/IBMPlexSans-LightItalic.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -25,8 +23,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh; 
-  cursor: url('./Assets/icons/Rocket.svg'), auto;
+  cursor: url('/src/Assets/icons/Rocket.svg'), auto;
 }
+
+
 
 #root {
   height: 100%;
