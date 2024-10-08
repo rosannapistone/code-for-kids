@@ -6,22 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { EasyCss } from "../../Components/challenges/easy/easy-css/EasyCss";
 import { EasyHtml } from "../../Components/challenges/easy/easy-html/EasyHtml";
 
-
-
-
 export const ChallengeEasy = () => {
-
 const [isFinished, setIsFinished] = useState(false);
-
 const [startEasyCss, setStartEasyCss] = useState(false);
 const [startEasyHtml, setStartEasyHtml] = useState(false);
-
 const [displaySymbols, setDisplaySymbols] = useState(true);
-
-console.log(startEasyCss, startEasyHtml)
-
-
-
 
 const navigate = useNavigate();
 

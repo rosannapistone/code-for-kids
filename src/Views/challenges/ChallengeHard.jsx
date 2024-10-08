@@ -6,22 +6,10 @@ import { Hard } from "../../Components/challenges/hard/Hard";
 import { Symbols } from "../../Components/symbols/Symbols";
 import { Illustration } from "../../Assets/illustrations/illustrations";
 
-
-
-
 export const ChallengeHard = () => {
 
 const [isFinished, setIsFinished] = useState(false);
-
-const [startEasyCss, setStartEasyCss] = useState(false);
-const [startEasyHtml, setStartEasyHtml] = useState(false);
-
 const [displaySymbols, setDisplaySymbols] = useState(true);
-
-console.log(startEasyCss, startEasyHtml)
-
-
-
 
 const navigate = useNavigate();
 
@@ -43,16 +31,11 @@ const navigate = useNavigate();
         <h2>SNYGGT JOBBAT!</h2>
       </div>
       )}
-      </>
-     
-         
-               
+      </>    
        
-         <div className="button-container">
-           
+         <div className="button-container">  
             <button className="back" onClick={() => navigate("/")}>TILLBAKA</button>
             <button className="done" onClick={() => { setDisplaySymbols(false); setIsFinished(true)}}>KLAR</button>
-       
         </div>  
         </div> 
   

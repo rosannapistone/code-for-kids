@@ -2,10 +2,7 @@ import ReactCodepen from "react-codepen-embed";
 import { Illustration } from "../../../../Assets/illustrations/illustrations";
 
 
-
-
 export const EasyHtml = () => {
-
   return (
     <div className="easy">
       <div className="challenge-wrapper">
@@ -41,18 +38,6 @@ export const EasyHtml = () => {
             <ReactCodepen hash="jOgqXyj" user="rosannapistone" defaultTab='html,result' themeId='dark' preview='false' height='400' editable='true' loader={() => <div>Loading...</div>}/>
               </div>
             </div>
-       
-     
-        {/* <div className="button-container">
-        <button className="back" onClick={() => navigate('/')}>TILLBAKA</button>
-        {openChallenges ? 
-        (
-          <button className="next">NÄSTA UTMANING</button>
-
-        ) : null}
-       
-        </div> */}
-
       </div>
     </div>
   )
