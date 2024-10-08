@@ -1,9 +1,7 @@
 @import '../../Assets/styles/variables.scss';
 
 .landing-page {
-  background-color: $soft-pink;
   color: $off-black;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 4rem;
@@ -14,7 +12,7 @@
     height: fit-content;
     overflow: hidden; 
     white-space: nowrap; 
-    margin: 0 auto;
+    margin: 2rem auto;
     letter-spacing: .15em; 
     animation: 
       typing 5s steps(50, end),
@@ -35,9 +33,11 @@
 
   & > .challange-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    //flex-wrap: wrap;
+    gap: 2rem;
+    width: 50%;
   
 
     & > .challange-easy, 
@@ -46,7 +46,7 @@
       padding: .5rem; 
       box-sizing: border-box; 
       border-radius: .5rem;
-      flex-basis: calc(50% - 1.5rem);
+      //flex-basis: calc(50% - 1.5rem);
       
       & > .inner { 
         height: 100%; 
@@ -58,12 +58,16 @@
         flex-direction: column;
         justify-content: space-between;
 
-        & > .title {
-
+        & > p {
+          font-family: 'IBMPlexSans'; 
         }
+
         & > .age {
           text-align: end;
           margin: 0;
+          & > svg {
+            height: 2rem;
+          }
         }
       } 
     } 
@@ -89,7 +93,10 @@
     } 
 
     & > .challange-game { 
-      background-color: #E6B7C4;
+      background-color: $pink-110;
+      &:hover {
+        background-color: $pink-30;
+      }
       & > .inner { 
         border: .3rem solid $pink; 
         align-items: center;
