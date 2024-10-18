@@ -109,23 +109,6 @@ export const Games = () => {
     }
   };
 
-  // Check whether all tasks are completed
-  const checkCompletion = (row, col) => {
-    // If the figure is not at the flag, show the "try again" modal
-    if (row !== flagPosition.row || col !== flagPosition.col) {
-      openModal("Försök igen, måste avsluta på flaggan!");
-      return;
-    }
-
-    if (lampLit && fruitEaten) {
-      openModal(
-        "Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!"
-      );
-    } else {
-      openModal("Försök igen!");
-    }
-  };
-
   // Add commands by clicking buttons
   const handleCommandClick = (command) => {
     setCommands((prevCommands) => [...prevCommands, command]);
@@ -161,6 +144,23 @@ export const Games = () => {
   useEffect(() => {
     if (!gameStarted) return;
 
+    // Check whether all tasks are completed
+    const checkCompletion = (row, col) => {
+      // If the figure is not at the flag, show the "try again" modal
+      if (row !== flagPosition.row || col !== flagPosition.col) {
+        openModal("Försök igen, måste avsluta på flaggan!");
+        return;
+      }
+
+      if (lampLit && fruitEaten) {
+        openModal(
+          "Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!"
+        );
+      } else {
+        openModal("Försök igen!");
+      }
+    };
+
     if (
       figurePosition.row === flagPosition.row &&
       figurePosition.col === flagPosition.col
@@ -169,7 +169,15 @@ export const Games = () => {
     } else if (commands.length === 0) {
       openModal("Försök igen!");
     }
-  }, [figurePosition, checkCompletion, flagPosition.col, flagPosition.row, gameStarted, commands.length]);
+  }, [
+    figurePosition,
+    flagPosition.col,
+    flagPosition.row,
+    gameStarted,
+    commands.length,
+    lampLit,
+    fruitEaten
+  ]);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -317,11 +325,10 @@ export const Games = () => {
           <FontAwesomeIcon icon={faAppleAlt} />
         </button>
         <button
-                  onClick={executeCommands}
-
+          onClick={executeCommands}
           style={{
             padding: "10px",
-            color:"white",
+            color: "white",
             margin: "10px",
             backgroundColor: "green",
             border: "1px solid #000",
@@ -333,7 +340,6 @@ export const Games = () => {
         >
           Kör!
         </button>
-
       </div>
 
       {/* Command List with Delete Button */}
@@ -388,7 +394,6 @@ export const Games = () => {
       </div>
 
       {/* Execute button */}
-
     </div>
   );
 };
