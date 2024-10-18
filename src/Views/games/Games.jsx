@@ -5,8 +5,16 @@ import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
 import Modal from "react-modal";
 import "./games-view.scss";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faArrowDown, faArrowLeft, faArrowRight, faAppleAlt, faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faAppleAlt,
+  faLightbulb,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 Modal.setAppElement("#root"); // Add this line for accessibility
 
 export const Games = () => {
@@ -16,7 +24,7 @@ export const Games = () => {
   const [fruitEaten, setFruitEaten] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState(""); // To store modal content
-
+  const [gameStarted, setGameStarted] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState(null); // Track the index of the dragging command
 
   const lampPosition = { row: 2, col: 4 };
@@ -33,18 +41,20 @@ export const Games = () => {
     resetGame();
   }
 
-    // Function to reset the game
-    const resetGame = () => {
-      setFigurePosition({ row: 4, col: 1 });
-      setLampLit(false);
-      setFruitEaten(false);
-      setCommands([]);
-    };
+  // Function to reset the game
+  const resetGame = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setCommands([]);
+  };
 
   // Function to add a delay between commands
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const executeCommands = async () => {
+    setGameStarted(true);
     let { row, col } = figurePosition; // Use row and col
 
     for (let command of commands) {
@@ -99,34 +109,22 @@ export const Games = () => {
     }
   };
 
-  const checkFlag = (row, col) => {
-    if (row === flagPosition.row && col === flagPosition.col) {
-      if (lampLit && fruitEaten) {
-        openModal("Congratulations! You have completed all tasks!");
-      } else {
-        openModal("Try again! You missed lighting the lamp or eating the fruit.");
-      }
+  // Check whether all tasks are completed
+  const checkCompletion = (row, col) => {
+    // If the figure is not at the flag, show the "try again" modal
+    if (row !== flagPosition.row || col !== flagPosition.col) {
+      openModal("Försök igen, måste avsluta på flaggan!");
+      return;
+    }
+
+    if (lampLit && fruitEaten) {
+      openModal(
+        "Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!"
+      );
+    } else {
+      openModal("Försök igen!");
     }
   };
-  
-  // Check whether all tasks are completed
-const checkCompletion = (row, col) => {
-  // If the figure is not at the flag, show the "try again" modal
-  if (row !== flagPosition.row || col !== flagPosition.col) {
-    openModal("Försök igen, måste avsluta på flaggan!");
-    return;
-  }
-
-  // Check if all tasks (lighting the lamp, eating the fruit, and reaching the flag) are completed
-
-  console.log("Lamp lit:", lampLit, "Fruit eaten:", fruitEaten);
-  
-  if (lampLit && fruitEaten) {
-    openModal("Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!");
-  } else {
-    openModal("Försök igen!");
-  }
-};
 
   // Add commands by clicking buttons
   const handleCommandClick = (command) => {
@@ -161,10 +159,17 @@ const checkCompletion = (row, col) => {
   };
 
   useEffect(() => {
-    if (figurePosition.row === flagPosition.row && figurePosition.col === flagPosition.col) {
+    if (!gameStarted) return;
+
+    if (
+      figurePosition.row === flagPosition.row &&
+      figurePosition.col === flagPosition.col
+    ) {
       checkCompletion(figurePosition.row, figurePosition.col);
+    } else if (commands.length === 0) {
+      openModal("Försök igen!");
     }
-  }, [figurePosition]); // useEffect triggas varje gång positionen ändras
+  }, [figurePosition, commands]); // useEffect triggas varje gång positionen ändras
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -209,7 +214,7 @@ const checkCompletion = (row, col) => {
 
       {/* Command options */}
       <div id="command-container" style={{ marginTop: "20px" }}>
-      <button
+        <button
           onClick={() => handleCommandClick("up")}
           style={{
             padding: "10px",
