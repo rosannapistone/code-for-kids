@@ -169,7 +169,7 @@ export const Games = () => {
     } else if (commands.length === 0) {
       openModal("Försök igen!");
     }
-  }, [figurePosition, checkCompletion, flagPosition.col, flagPosition.row, gameStarted]);
+  }, [figurePosition, checkCompletion, flagPosition.col, flagPosition.row, gameStarted, commands.length]);
 
   return (
     <div style={{ textAlign: "center" }}>
