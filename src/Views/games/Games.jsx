@@ -169,7 +169,7 @@ export const Games = () => {
     } else if (commands.length === 0) {
       openModal("Försök igen!");
     }
-  }, [figurePosition, commands]); // useEffect triggas varje gång positionen ändras
+  }, [figurePosition, checkCompletion, flagPosition.col, flagPosition.row, gameStarted]);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -316,6 +316,24 @@ export const Games = () => {
           Ät Äpple
           <FontAwesomeIcon icon={faAppleAlt} />
         </button>
+        <button
+                  onClick={executeCommands}
+
+          style={{
+            padding: "10px",
+            color:"white",
+            margin: "10px",
+            backgroundColor: "green",
+            border: "1px solid #000",
+            display: "inline-flex",
+            minWidth: "120px",
+            cursor: "pointer",
+            justifyContent: "space-around",
+          }}
+        >
+          Kör!
+        </button>
+
       </div>
 
       {/* Command List with Delete Button */}
@@ -370,12 +388,7 @@ export const Games = () => {
       </div>
 
       {/* Execute button */}
-      <button
-        onClick={executeCommands}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
-        Kör!
-      </button>
+
     </div>
   );
 };
