@@ -6,6 +6,7 @@ const Lamp = ({ position, lit }) => {
   return lit ? (
     <img
       src={lampRed}
+      alt="Lamp"
       style={{
         width: "50px",
         height: "50px",
@@ -18,6 +19,7 @@ const Lamp = ({ position, lit }) => {
   ) : (
     <img
       src={lampBlue}
+      alt="Lamp"
       style={{
         width: "50px",
         height: "50px",

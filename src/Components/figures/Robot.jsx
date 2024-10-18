@@ -5,6 +5,7 @@ const Robot = ({ position }) => {
   return (
     <img
       src={robot}
+      alt="Robot"
       style={{
         width: "50px",
         height: "50px",
@@ -14,7 +15,6 @@ const Robot = ({ position }) => {
         zIndex: 1,
         transition: "top 0.5s ease, left 0.5s ease", 
       }}
-      alt="Robot"
     />
   );
 };

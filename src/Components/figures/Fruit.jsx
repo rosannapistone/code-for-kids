@@ -7,6 +7,7 @@ const Fruit = ({ position, eaten }) => {
   return eaten ? (
     <img
       src={appleEaten}
+      alt="Apple"
       style={{
         width: "50px",
         height: "50px",
@@ -19,6 +20,7 @@ const Fruit = ({ position, eaten }) => {
   ) : (
     <img
       src={apple}
+      alt="Apple"
       style={{
         width: "50px",
         height: "50px",

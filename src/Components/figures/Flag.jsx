@@ -5,6 +5,7 @@ const Flag = ({ position }) => {
   return (
     <img
       src={flag}
+      alt="Flag"
       style={{
         width: "50px",
         height: "50px",
