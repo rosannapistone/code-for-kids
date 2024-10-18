@@ -1,27 +1,53 @@
-import React, { useState } from "react";
-import Fruit from "./figures/Fruit"; 
-import Flag from "./figures/Flag"; 
-import Robot from "./figures/Robot"; 
-import Lamp from "./figures/Lamp"; 
+import React, { useState, useEffect } from "react";
+import Fruit from "../../Components/figures/Fruit";
+import Flag from "../../Components/figures/Flag";
+import Robot from "../../Components/figures/Robot";
+import Lamp from "../../Components/figures/Lamp";
+import Modal from "react-modal";
+import "./games-view.scss";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUp, faArrowDown, faArrowLeft, faArrowRight, faAppleAlt, faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
+Modal.setAppElement("#root"); // Add this line for accessibility
 
-const PathGame = () => {
+export const Games = () => {
   const [commands, setCommands] = useState([]);
   const [figurePosition, setFigurePosition] = useState({ row: 4, col: 1 });
   const [lampLit, setLampLit] = useState(false);
   const [fruitEaten, setFruitEaten] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(""); // To store modal content
 
-  const [draggingIndex, setDraggingIndex] = useState(null); // Track dragging index
-
+  const [draggingIndex, setDraggingIndex] = useState(null); // Track the index of the dragging command
 
   const lampPosition = { row: 2, col: 4 };
   const fruitPosition = { row: 6, col: 8 };
   const flagPosition = { row: 1, col: 10 };
 
-  // Function to move the figure and perform commands
-  const executeCommands = () => {
-    let { row, col } = figurePosition; // use row and col
+  function openModal(content) {
+    setModalContent(content); // Set the dynamic content
+    setIsOpen(true);
+  }
 
-    commands.forEach((command) => {
+  function closeModal() {
+    setIsOpen(false);
+    resetGame();
+  }
+
+    // Function to reset the game
+    const resetGame = () => {
+      setFigurePosition({ row: 4, col: 1 });
+      setLampLit(false);
+      setFruitEaten(false);
+      setCommands([]);
+    };
+
+  // Function to add a delay between commands
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const executeCommands = async () => {
+    let { row, col } = figurePosition; // Use row and col
+
+    for (let command of commands) {
       switch (command) {
         case "up":
           row = Math.max(1, row - 1); // Prevent going off grid
@@ -35,74 +61,89 @@ const PathGame = () => {
         case "right":
           col = Math.min(12, col + 1); // Prevent going off grid
           break;
-        case "light":
-          checkLamp(row, col);
+        case "light lamp":
+          checkLamp(row, col); // Check lamp after movement
           break;
-        case "eat":
-          checkFruit(row, col);
+        case "eat fruit":
+          checkFruit(row, col); // Check fruit after movement
           break;
         default:
           break;
       }
-    });
 
-    // Update figure's position
-    setFigurePosition({ row, col });
+      // Update the figure's position for each command
+      setFigurePosition({ row, col });
 
-    // Check if the figure has reached the flag
-    checkFlag(row, col);
+      // Wait 0.5 seconds before executing the next command
+      await delay(500);
+    }
 
     // Clear commands after execution
     setCommands([]);
   };
 
-  // Check if the figure reaches the lamp
+  // Adjusted functions to check lamp and fruit positions
   const checkLamp = (row, col) => {
     if (row === lampPosition.row && col === lampPosition.col) {
       setLampLit(true);
     } else {
-      alert("You need to be near the lamp to light it up!");
+      openModal("Du behöver vara nära lampan för att tända den!"); // Show error modal
     }
   };
 
-  // Check if the figure reaches the fruit
   const checkFruit = (row, col) => {
     if (row === fruitPosition.row && col === fruitPosition.col) {
       setFruitEaten(true);
     } else {
-      alert("You need to be near the fruit to eat it!");
+      openModal("Du behöver vara nära frukten för att äta den!"); // Show error modal
     }
   };
 
-  // Check if the figure reaches the flag
   const checkFlag = (row, col) => {
     if (row === flagPosition.row && col === flagPosition.col) {
       if (lampLit && fruitEaten) {
-        alert("You reached the flag, lit the lamp, and ate the fruit!");
+        openModal("Congratulations! You have completed all tasks!");
       } else {
-        alert(
-          "You reached the flag, but missed lighting the lamp or eating the fruit!"
-        );
+        openModal("Try again! You missed lighting the lamp or eating the fruit.");
       }
     }
   };
+  
+  // Check whether all tasks are completed
+const checkCompletion = (row, col) => {
+  // If the figure is not at the flag, show the "try again" modal
+  if (row !== flagPosition.row || col !== flagPosition.col) {
+    openModal("Försök igen, måste avsluta på flaggan!");
+    return;
+  }
 
-  // Handle adding commands by clicking buttons
+  // Check if all tasks (lighting the lamp, eating the fruit, and reaching the flag) are completed
+
+  console.log("Lamp lit:", lampLit, "Fruit eaten:", fruitEaten);
+  
+  if (lampLit && fruitEaten) {
+    openModal("Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!");
+  } else {
+    openModal("Försök igen!");
+  }
+};
+
+  // Add commands by clicking buttons
   const handleCommandClick = (command) => {
     setCommands((prevCommands) => [...prevCommands, command]);
   };
 
-  // Handle drag start in the command list
+  // Handle drag start for reordering commands
   const handleDragStartCommand = (index) => {
     setDraggingIndex(index);
   };
 
-  // Handle drag over to allow drop
+  // Allow drag over for command reordering
   const handleDragOverCommand = (e) => {
     e.preventDefault();
   };
 
-  // Handle drop for reordering commands
+  // Handle dropping commands to change their order
   const handleDropCommand = (index) => {
     const newCommands = [...commands];
     const draggedCommand = newCommands[draggingIndex];
@@ -112,12 +153,18 @@ const PathGame = () => {
     setDraggingIndex(null); // Reset dragging index
   };
 
-  // Handle deleting a command when clicking the red X button
+  // Delete a command when clicking the red X button
   const handleDeleteCommand = (index) => {
     const newCommands = [...commands];
     newCommands.splice(index, 1); // Remove the selected command
     setCommands(newCommands);
   };
+
+  useEffect(() => {
+    if (figurePosition.row === flagPosition.row && figurePosition.col === flagPosition.col) {
+      checkCompletion(figurePosition.row, figurePosition.col);
+    }
+  }, [figurePosition]); // useEffect triggas varje gång positionen ändras
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -148,22 +195,37 @@ const PathGame = () => {
         <Flag position={flagPosition} />
       </div>
 
+      {/* Modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Game Modal"
+        className={"game-modal"}
+        overlayClassName={"game-modal-overlay"} // Add this for the overlay
+      >
+        <h2>{modalContent}</h2>
+        <button onClick={closeModal}>Spela igen!</button>
+      </Modal>
+
       {/* Command options */}
       <div id="command-container" style={{ marginTop: "20px" }}>
-        <button
+      <button
           onClick={() => handleCommandClick("up")}
           style={{
             padding: "10px",
             margin: "10px",
             backgroundColor: "#ffcc00",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Move Up
+          Gå Upp
+          <FontAwesomeIcon icon={faArrowUp} />
         </button>
+
         <button
           onClick={() => handleCommandClick("down")}
           style={{
@@ -171,13 +233,16 @@ const PathGame = () => {
             margin: "10px",
             backgroundColor: "#ffcc00",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Move Down
+          Gå Ner
+          <FontAwesomeIcon icon={faArrowDown} />
         </button>
+
         <button
           onClick={() => handleCommandClick("left")}
           style={{
@@ -185,13 +250,16 @@ const PathGame = () => {
             margin: "10px",
             backgroundColor: "#ffcc00",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Move Left
+          Gå Vänster
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
+
         <button
           onClick={() => handleCommandClick("right")}
           style={{
@@ -199,42 +267,49 @@ const PathGame = () => {
             margin: "10px",
             backgroundColor: "#ffcc00",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Move Right
+          Gå Höger
+          <FontAwesomeIcon icon={faArrowRight} />
         </button>
 
         {/* New commands: Eat and Light */}
         <button
-          onClick={() => handleCommandClick("light")}
+          onClick={() => handleCommandClick("light lamp")}
           style={{
             padding: "10px",
             margin: "10px",
             backgroundColor: "#ffd700",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Light Up
+          Tänd Lampa
+          <FontAwesomeIcon icon={faLightbulb} />
         </button>
+
         <button
-          onClick={() => handleCommandClick("eat")}
+          onClick={() => handleCommandClick("eat fruit")}
           style={{
             padding: "10px",
             margin: "10px",
-            backgroundColor: "#ff6347",
+            backgroundColor: "#ffd700",
             border: "1px solid #000",
-            display: "inline-block",
-            width: "100px",
+            display: "inline-flex",
+            minWidth: "120px",
             cursor: "pointer",
+            justifyContent: "space-around",
           }}
         >
-          Eat
+          Ät Äpple
+          <FontAwesomeIcon icon={faAppleAlt} />
         </button>
       </div>
 
@@ -252,7 +327,7 @@ const PathGame = () => {
         }}
       >
         {commands.length === 0
-          ? "No commands added yet"
+          ? "Inga kommandon har lagts till ännu"
           : commands.map((command, index) => (
               <div
                 key={index}
@@ -274,7 +349,7 @@ const PathGame = () => {
                 <button
                   onClick={() => handleDeleteCommand(index)}
                   style={{
-                    backgroundColor: "red",
+                    backgroundColor: "transparent",
                     color: "white",
                     border: "none",
                     borderRadius: "50%",
@@ -283,7 +358,7 @@ const PathGame = () => {
                     cursor: "pointer",
                   }}
                 >
-                  X
+                  <FontAwesomeIcon icon={faTimes} color="red" />
                 </button>
               </div>
             ))}
@@ -299,5 +374,3 @@ const PathGame = () => {
     </div>
   );
 };
-
-export default PathGame;

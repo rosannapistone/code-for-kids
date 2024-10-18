@@ -6,11 +6,6 @@ export const LandingPage = () => {
 
   const navigate = useNavigate();
 
-  const handleGameNavigation = () => {
-    window.location.href = '/lightbot/lightbot.html'; 
-  }
-
-
   return (
     <div className="landing-page">
       {/* <h1 className="heading">Välkommen till årets CODE CHALLENGE!</h1> */}
@@ -28,14 +23,10 @@ export const LandingPage = () => {
         <p className="age"><Illustration.Brain/><Illustration.Brain></Illustration.Brain></p>
         </div>
         </div>
-        <div className="challange-game" onClick={handleGameNavigation}>
+        <div className="challange-game" onClick={() => navigate('/games')}>
         <div className="inner">
         <h2 className="title">VILL DU SPELA?</h2>
-        <p className="description">Robotspel med logik i fokus, hjälp roboten att ta sig igenom banan men hjälp av så få kommandon som möjligt.</p>
-        {/* <button onClick={handleGameNavigation}>Till spelet 
-          <Icon.Link />
-        </button> */}
-        {/* <p className="age">7-99+</p> */}
+        <p className="description">Hjälp roboten att hämta flaggan. Glöm inte att utföra uppdragen på vägen!</p>
         </div>
         </div>
       </div>
