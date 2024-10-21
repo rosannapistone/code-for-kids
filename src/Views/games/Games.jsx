@@ -59,22 +59,22 @@ export const Games = () => {
 
     for (let command of commands) {
       switch (command) {
-        case "up":
+        case "Gå upp":
           row = Math.max(1, row - 1); // Prevent going off grid
           break;
-        case "down":
+        case "Gå ner":
           row = Math.min(8, row + 1); // Prevent going off grid
           break;
-        case "left":
+        case "Gå vänster":
           col = Math.max(1, col - 1); // Prevent going off grid
           break;
-        case "right":
+        case "Gå höger":
           col = Math.min(12, col + 1); // Prevent going off grid
           break;
-        case "light lamp":
+        case "Tänd lampa":
           checkLamp(row, col); // Check lamp after movement
           break;
-        case "eat fruit":
+        case "Ät äpple":
           checkFruit(row, col); // Check fruit after movement
           break;
         default:
@@ -176,7 +176,7 @@ export const Games = () => {
     gameStarted,
     commands.length,
     lampLit,
-    fruitEaten
+    fruitEaten,
   ]);
 
   return (
@@ -223,7 +223,7 @@ export const Games = () => {
       {/* Command options */}
       <div id="command-container" style={{ marginTop: "20px" }}>
         <button
-          onClick={() => handleCommandClick("up")}
+          onClick={() => handleCommandClick("Gå upp")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -240,7 +240,7 @@ export const Games = () => {
         </button>
 
         <button
-          onClick={() => handleCommandClick("down")}
+          onClick={() => handleCommandClick("Gå ner")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -257,7 +257,7 @@ export const Games = () => {
         </button>
 
         <button
-          onClick={() => handleCommandClick("left")}
+          onClick={() => handleCommandClick("Gå vänster")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -274,7 +274,7 @@ export const Games = () => {
         </button>
 
         <button
-          onClick={() => handleCommandClick("right")}
+          onClick={() => handleCommandClick("Gå höger")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -292,7 +292,7 @@ export const Games = () => {
 
         {/* New commands: Eat and Light */}
         <button
-          onClick={() => handleCommandClick("light lamp")}
+          onClick={() => handleCommandClick("Tänd lampa")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -309,7 +309,7 @@ export const Games = () => {
         </button>
 
         <button
-          onClick={() => handleCommandClick("eat fruit")}
+          onClick={() => handleCommandClick("Ät äpple")}
           style={{
             padding: "10px",
             margin: "10px",
@@ -323,6 +323,22 @@ export const Games = () => {
         >
           Ät Äpple
           <FontAwesomeIcon icon={faAppleAlt} />
+        </button>
+        <button
+          onClick={() => setCommands([])} // This clears the commands
+          style={{
+            padding: "10px",
+            margin: "10px",
+            backgroundColor: "red",
+            color: "white",
+            border: "1px solid #000",
+            display: "inline-flex",
+            minWidth: "120px",
+            cursor: "pointer",
+            justifyContent: "space-around",
+          }}
+        >
+          Rensa Kommandon
         </button>
         <button
           onClick={executeCommands}
@@ -346,17 +362,23 @@ export const Games = () => {
       <div
         id="command-list"
         style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
           border: "2px dashed #ccc",
-          minHeight: "100px",
-          width: "300px",
+          minHeight: "200px",
+          maxHeight: "200px",
+          width: "50%",
+          flexWrap: "wrap",
           margin: "20px auto",
           padding: "10px",
-          textAlign: "center",
           backgroundColor: "#f9f9f9",
+          gap: "0px",
+          alignContent: "flex-start",
         }}
       >
         {commands.length === 0
-          ? "Inga kommandon har lagts till ännu"
+          ? "Klicka på ett kommando för att lägga till det!"
           : commands.map((command, index) => (
               <div
                 key={index}
@@ -372,9 +394,17 @@ export const Games = () => {
                   cursor: "move",
                   display: "flex",
                   justifyContent: "space-between", // Aligns the X button on the right
+                  alignItems: "center",
+                  flex: "1",
+                  width: "15%",
+                  maxHeight: "20px",
                 }}
               >
-                <span>{command}</span>
+                <span>
+                  {" "}
+                  {index + 1 + ". "}
+                  {command}
+                </span>
                 <button
                   onClick={() => handleDeleteCommand(index)}
                   style={{
