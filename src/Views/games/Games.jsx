@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Fruit from "../../Components/figures/Fruit";
 import Flag from "../../Components/figures/Flag";
 import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
+import Wall from "../../Components/figures/Wall";
 import Modal from "react-modal";
 import "./games-view.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +20,8 @@ import {
 Modal.setAppElement("#root"); // Add this line for accessibility
 
 export const Games = () => {
+  const [currentLevel, setCurrentLevel] = useState(1); // 1 = first level, 2 = next level, 3 = last level
+  const navigate = useNavigate(); // Initialize the navigate function here
   const [commands, setCommands] = useState([]);
   const [figurePosition, setFigurePosition] = useState({ row: 4, col: 1 });
   const [lampLit, setLampLit] = useState(false);
@@ -27,9 +31,94 @@ export const Games = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState(null); // Track the index of the dragging command
 
-  const lampPosition = { row: 2, col: 4 };
-  const fruitPosition = { row: 6, col: 8 };
-  const flagPosition = { row: 1, col: 10 };
+  const [lampPosition, setLampPosition] = useState({ row: 0, col: 0 });
+  const [fruitPosition, setFruitPosition] = useState({ row: 0, col: 0 });
+  const [flagPosition, setFlagPosition] = useState({ row: 0, col: 0 });
+  const [wallPosition, setWallPosition] = useState([]);
+
+  const numRows = 4;
+  const numCols = 12;
+
+  const isWallPosition = (row, col) => {
+    return wallPosition.some(wall => wall.row === row && wall.col === col);
+  };
+  
+  useEffect(() => {
+    firstLevel(); // Load the first level upon mounting
+  }, []);
+
+  const goToLandingPage = () => {
+    navigate("/");
+  };
+
+  const addWallPosition = (newPosition) => {
+    setWallPosition((prevPositions) => [...prevPositions, newPosition]);
+  };
+
+  const firstLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setCommands([]);
+    setLampPosition({ row: 2, col: 4 });
+    setFruitPosition({ row: 2, col: 7 });
+    setFlagPosition({ row: 2, col: 10 });
+    setWallPosition([]);
+    openModal("Welcome to the first level!");
+  };
+
+  const nextLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setCommands([]);
+
+    setLampPosition({ row: 3, col: 5 }); 
+    setFruitPosition({ row: 2, col: 7 });
+    setFlagPosition({ row: 1, col: 9 });
+    setWallPosition([]);
+
+    openModal("Welcome to the next level!");
+  };
+
+  const lastLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setCommands([]);
+
+    setLampPosition({ row: 1, col: 12 }); 
+    setFruitPosition({ row: 2, col: 12 });
+    setFlagPosition({ row: 3, col: 12 });
+    setWallPosition([
+      { row: 2, col: 6 },
+      { row: 3, col: 6 },
+      { row: 4, col: 6 },
+
+      { row: 1, col: 9 },
+      { row: 2, col: 9 },
+      { row: 3, col: 9 },
+    ]);
+
+
+    openModal("Welcome to the last level!");
+  };
+
+  const handleLevelChange = () => {
+    if (currentLevel === 1) {
+      nextLevel();
+      setCurrentLevel(2);
+    } else if (currentLevel === 2) {
+      lastLevel();
+      setCurrentLevel(3);
+    } else {
+      firstLevel();
+      setCurrentLevel(1);
+    }
+  };
 
   function openModal(content) {
     setModalContent(content); // Set the dynamic content
@@ -58,18 +147,21 @@ export const Games = () => {
     let { row, col } = figurePosition; // Use row and col
 
     for (let command of commands) {
+      let newRow = row;
+      let newCol = col;
+      
       switch (command) {
         case "Gå upp":
-          row = Math.max(1, row - 1); // Prevent going off grid
+          newRow = Math.max(1, row - 1); // Prevent going off grid
           break;
         case "Gå ner":
-          row = Math.min(8, row + 1); // Prevent going off grid
+          newRow = Math.min(numRows, row + 1); // Prevent going off grid
           break;
         case "Gå vänster":
-          col = Math.max(1, col - 1); // Prevent going off grid
+          newCol = Math.max(1, col - 1); // Prevent going off grid
           break;
         case "Gå höger":
-          col = Math.min(12, col + 1); // Prevent going off grid
+          newCol = Math.min(numCols, col + 1); // Prevent going off grid
           break;
         case "Tänd lampa":
           checkLamp(row, col); // Check lamp after movement
@@ -80,7 +172,13 @@ export const Games = () => {
         default:
           break;
       }
-
+      if (isWallPosition(newRow, newCol)) {
+        openModal("Collision with a wall! Resetting the game...");
+        resetGame();
+        return; // Exit the function early to reset
+      }
+      row = newRow;
+      col = newCol;
       // Update the figure's position for each command
       setFigurePosition({ row, col });
 
@@ -94,7 +192,8 @@ export const Games = () => {
 
   // Adjusted functions to check lamp and fruit positions
   const checkLamp = (row, col) => {
-    if (row === lampPosition.row && col === lampPosition.col) {
+    if (row === lampPosition?.row && col === lampPosition?.col)
+      {
       setLampLit(true);
     } else {
       openModal("Du behöver vara nära lampan för att tända den!"); // Show error modal
@@ -102,7 +201,7 @@ export const Games = () => {
   };
 
   const checkFruit = (row, col) => {
-    if (row === fruitPosition.row && col === fruitPosition.col) {
+    if (row === fruitPosition?.row && col === fruitPosition?.col) {
       setFruitEaten(true);
     } else {
       openModal("Du behöver vara nära frukten för att äta den!"); // Show error modal
@@ -162,8 +261,8 @@ export const Games = () => {
     };
 
     if (
-      figurePosition.row === flagPosition.row &&
-      figurePosition.col === flagPosition.col
+      figurePosition.row === flagPosition?.row &&
+      figurePosition.col === flagPosition?.col
     ) {
       checkCompletion(figurePosition.row, figurePosition.col);
     } else if (commands.length === 0) {
@@ -188,10 +287,10 @@ export const Games = () => {
         id="game-container"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(12, 50px)",
-          gridTemplateRows: "repeat(8, 50px)",
-          width: "600px",
-          height: "400px",
+          gridTemplateColumns: `repeat(${numCols}, 50px)`,
+          gridTemplateRows: `repeat(${numRows}, 50px)`,
+          width: `${numCols * 50}px`,
+          height: `${numRows * 50}px`,
           position: "relative",
           border: "2px solid black",
           backgroundColor: "#E7E7E7",
@@ -203,9 +302,12 @@ export const Games = () => {
       >
         {/* Use the components for each figure */}
         <Robot position={figurePosition} />
-        <Lamp position={lampPosition} lit={lampLit} />
-        <Fruit position={fruitPosition} eaten={fruitEaten} />
-        <Flag position={flagPosition} />
+        {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
+        {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
+        {flagPosition && <Flag position={flagPosition} />}
+        {wallPosition.map((position, index) => (
+          <Wall key={index} position={position} />
+        ))}
       </div>
 
       {/* Modal */}
@@ -356,6 +458,40 @@ export const Games = () => {
         >
           Kör!
         </button>
+        <button
+        onClick={handleLevelChange}
+        style={{
+            padding: "10px",
+            color: "white",
+            margin: "10px",
+            backgroundColor: "purple",
+            border: "1px solid #000",
+            display: "inline-flex",
+            minWidth: "120px",
+            cursor: "pointer",
+            justifyContent: "center",
+          }}
+        >
+        {currentLevel === 1 ? "Next Level" : currentLevel === 2 ? "Last Level" : "First Level"}
+        </button>
+        <button
+        onClick={goToLandingPage}
+        style={{
+          padding: "10px",
+          color: "white",
+          margin: "10px",
+          backgroundColor: "blue",
+          border: "1px solid #000",
+          display: "inline-flex",
+          minWidth: "120px",
+          cursor: "pointer",
+          justifyContent: "center",
+        }}
+      >
+        Go to Homepage
+          </button>
+ 
+
       </div>
 
       {/* Command List with Delete Button */}
