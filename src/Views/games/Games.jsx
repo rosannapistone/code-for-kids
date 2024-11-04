@@ -43,15 +43,6 @@ export const Games = () => {
     return wallPosition.some(wall => wall.row === row && wall.col === col);
   };
 
-  useEffect(() => {
-    firstLevel(); // Load the first level upon mounting
-  }, []);
-
-  const goToLandingPage = () => {
-    navigate("/");
-  };
-
-
   const firstLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
@@ -63,7 +54,17 @@ export const Games = () => {
     setFlagPosition({ row: 2, col: 10 });
     setWallPosition([]);
     openModal("Welcome to the first level!");
+  }; 
+
+  useEffect(() => {
+    firstLevel();
+  }, []);
+
+  const goToLandingPage = () => {
+    navigate("/");
   };
+
+
 
   const nextLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
@@ -99,8 +100,6 @@ export const Games = () => {
       { row: 2, col: 9 },
       { row: 3, col: 9 },
     ]);
-
-
     openModal("Welcome to the last level!");
   };
 
