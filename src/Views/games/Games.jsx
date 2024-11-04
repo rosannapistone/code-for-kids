@@ -42,7 +42,7 @@ export const Games = () => {
   const isWallPosition = (row, col) => {
     return wallPosition.some(wall => wall.row === row && wall.col === col);
   };
-  
+
   useEffect(() => {
     firstLevel(); // Load the first level upon mounting
   }, []);
@@ -51,9 +51,6 @@ export const Games = () => {
     navigate("/");
   };
 
-  const addWallPosition = (newPosition) => {
-    setWallPosition((prevPositions) => [...prevPositions, newPosition]);
-  };
 
   const firstLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
