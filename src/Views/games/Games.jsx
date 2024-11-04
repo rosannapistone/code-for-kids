@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Fruit from "../../Components/figures/Fruit";
 import Flag from "../../Components/figures/Flag";
@@ -43,7 +43,7 @@ export const Games = () => {
     return wallPosition.some(wall => wall.row === row && wall.col === col);
   };
 
-  const firstLevel = () => {
+  const firstLevel = useCallback(() => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
     setFruitEaten(false);
@@ -54,11 +54,11 @@ export const Games = () => {
     setFlagPosition({ row: 2, col: 10 });
     setWallPosition([]);
     openModal("Welcome to the first level!");
-  }; 
+  }, []); 
 
   useEffect(() => {
     firstLevel();
-  }, []);
+  }, [firstLevel]);
 
   const goToLandingPage = () => {
     navigate("/");
