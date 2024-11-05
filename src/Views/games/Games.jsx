@@ -5,6 +5,7 @@ import Flag from "../../Components/figures/Flag";
 import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
 import Wall from "../../Components/figures/Wall";
+import Lever from "../../Components/figures/Lever"
 import Modal from "react-modal";
 import "./games-view.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,10 +31,12 @@ export const Games = () => {
   const [modalContent, setModalContent] = useState(""); // To store modal content
   const [gameStarted, setGameStarted] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState(null); // Track the index of the dragging command
+  const [leverFlipped, setLeverFlipped] = useState(false);
 
   const [lampPosition, setLampPosition] = useState({ row: 0, col: 0 });
   const [fruitPosition, setFruitPosition] = useState({ row: 0, col: 0 });
   const [flagPosition, setFlagPosition] = useState({ row: 0, col: 0 });
+  const [leverPosition, setLeverPosition] = useState({row: 0, col: 0});
   const [wallPosition, setWallPosition] = useState([]);
 
   const numRows = 4;
@@ -43,17 +46,28 @@ export const Games = () => {
     return wallPosition.some(wall => wall.row === row && wall.col === col);
   };
 
+  const checkLever = (row, col) => {
+    if (row === leverPosition?.row && col === leverPosition?.col)
+    {
+      setLeverFlipped(!leverFlipped);
+
+    }
+    }
+
+
   const firstLevel = useCallback(() => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
     setFruitEaten(false);
     setGameStarted(false);
+    setLeverFlipped(false);
     setCommands([]);
     setLampPosition({ row: 2, col: 4 });
     setFruitPosition({ row: 2, col: 7 });
     setFlagPosition({ row: 2, col: 10 });
     setWallPosition([]);
-    openModal("Welcome to the first level!");
+    setLeverPosition({row: 1, col: 1});
+    openModal("Välkommen till första nivån!", true);
   }, []); 
 
   useEffect(() => {
@@ -73,24 +87,9 @@ export const Games = () => {
     setGameStarted(false);
     setCommands([]);
 
-    setLampPosition({ row: 3, col: 5 }); 
-    setFruitPosition({ row: 2, col: 7 });
-    setFlagPosition({ row: 1, col: 9 });
-    setWallPosition([]);
-
-    openModal("Welcome to the next level!");
-  };
-
-  const lastLevel = () => {
-    setFigurePosition({ row: 4, col: 1 });
-    setLampLit(false);
-    setFruitEaten(false);
-    setGameStarted(false);
-    setCommands([]);
-
-    setLampPosition({ row: 1, col: 12 }); 
-    setFruitPosition({ row: 2, col: 12 });
-    setFlagPosition({ row: 3, col: 12 });
+    setLampPosition({ row: 1, col: 6 }); 
+    setFruitPosition({ row: 4, col: 9 });
+    setFlagPosition({ row: 1, col: 12 });
     setWallPosition([
       { row: 2, col: 6 },
       { row: 3, col: 6 },
@@ -100,7 +99,38 @@ export const Games = () => {
       { row: 2, col: 9 },
       { row: 3, col: 9 },
     ]);
-    openModal("Welcome to the last level!");
+
+    openModal("Välkommen till andra nivån!", true);
+  };
+
+  const lastLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setCommands([]);
+
+    setLampPosition({ row: 3, col: 3 }); 
+    setFruitPosition({ row: 3, col: 5 });
+    setFlagPosition({ row: 4, col: 12 });
+
+    setWallPosition([
+      { row: 2, col: 4 },
+      { row: 3, col: 4 },
+      { row: 4, col: 4 },
+      { row: 2, col: 3 },
+      { row: 2, col: 5 },
+
+      { row: 1, col: 7 },
+      { row: 2, col: 7 },
+      { row: 2, col: 8 },
+      { row: 2, col: 9 },
+
+      { row: 3, col: 11 },
+      { row: 3, col: 12 },
+      { row: 4, col: 11 },
+    ]);
+    openModal("Välkommen till sista nivån!", true);
   };
 
   const handleLevelChange = () => {
@@ -115,10 +145,15 @@ export const Games = () => {
       setCurrentLevel(1);
     }
   };
-
-  function openModal(content) {
+  
+  function openModal(content, autoClose = false) {
     setModalContent(content); // Set the dynamic content
     setIsOpen(true);
+    if(autoClose) {
+    setTimeout(() => {
+      closeModal();
+    }, 2000);
+  }
   }
 
   function closeModal() {
@@ -132,6 +167,7 @@ export const Games = () => {
     setLampLit(false);
     setFruitEaten(false);
     setGameStarted(false);
+    setLeverFlipped(false);
     setCommands([]);
   };
 
@@ -164,7 +200,7 @@ export const Games = () => {
           break;
         case "Ät äpple":
           checkFruit(row, col); // Check fruit after movement
-          break;
+          break; 
         default:
           break;
       }
@@ -177,6 +213,7 @@ export const Games = () => {
       col = newCol;
       // Update the figure's position for each command
       setFigurePosition({ row, col });
+      checkLever(row, col);
 
       // Wait 0.5 seconds before executing the next command
       await delay(500);
@@ -203,6 +240,7 @@ export const Games = () => {
       openModal("Du behöver vara nära frukten för att äta den!"); // Show error modal
     }
   };
+
 
   // Add commands by clicking buttons
   const handleCommandClick = (command) => {
@@ -249,8 +287,7 @@ export const Games = () => {
 
       if (lampLit && fruitEaten) {
         openModal(
-          "Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!"
-        );
+          "Grattis! Du har slutfört alla uppgifter! Rosanna har godis till dig!");
       } else {
         openModal("Försök igen!");
       }
@@ -273,6 +310,14 @@ export const Games = () => {
     lampLit,
     fruitEaten,
   ]);
+
+
+  // useEffect(() => {
+
+  //   checkLever(figurePosition.row, figurePosition.col);
+  // }, [
+  //   figurePosition,
+  // ]);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -301,6 +346,7 @@ export const Games = () => {
         {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
         {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
         {flagPosition && <Flag position={flagPosition} />}
+        {leverPosition && <Lever position={leverPosition} flipped={leverFlipped}  />}
         {wallPosition.map((position, index) => (
           <Wall key={index} position={position} />
         ))}
@@ -315,7 +361,10 @@ export const Games = () => {
         overlayClassName={"game-modal-overlay"} // Add this for the overlay
       >
         <h2>{modalContent}</h2>
+        {!modalContent.includes("Välkommen till") && (
         <button onClick={closeModal}>Spela igen!</button>
+
+        )}
       </Modal>
 
       {/* Command options */}
@@ -468,7 +517,7 @@ export const Games = () => {
             justifyContent: "center",
           }}
         >
-        {currentLevel === 1 ? "Next Level" : currentLevel === 2 ? "Last Level" : "First Level"}
+        {currentLevel === 1 ? "Andra nivån" : currentLevel === 2 ? "Sista nivån" : "Första nivån"}
         </button>
         <button
         onClick={goToLandingPage}
@@ -484,7 +533,7 @@ export const Games = () => {
           justifyContent: "center",
         }}
       >
-        Go to Homepage
+        Gå till startsidan
           </button>
  
 
