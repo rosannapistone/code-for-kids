@@ -29,15 +29,22 @@ const getIcon = (commandType) => {
       return faArrowLeft;
     case "right":
       return faArrowRight;
+    case "light":
+      return faLightbulb;
+    case "eat":
+      return faAppleAlt;
     default:
       return null;
   }
 };
 
+
+
 export const Games = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const navigate = useNavigate();
   const [commands, setCommands] = useState([]);
+  const [displayedCommands, setDisplayedCommands] = useState([]); // for rendering arrows
   const [figurePosition, setFigurePosition] = useState({ row: 4, col: 1 });
   const [currentCommandPosition, setCurrentCommandPosition] = useState({
     row: 4,
@@ -79,6 +86,11 @@ export const Games = () => {
         return newFlipStatus;
       });
     }
+  };
+
+
+  const clearArrows = () => {
+    setDisplayedCommands([]);
   };
 
   const firstLevel = useCallback(() => {
@@ -139,7 +151,7 @@ export const Games = () => {
     setLampPosition({ row: 3, col: 3 });
     setFruitPosition({ row: 3, col: 5 });
     setFlagPosition({ row: 4, col: 12 });
-    setLeverPosition({ row: 1, col: 1 });
+    setLeverPosition({ row: 1, col: 8 });
 
     setWallPosition([
       { row: 2, col: 4 },
@@ -203,14 +215,15 @@ export const Games = () => {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const executeCommands = async () => {
+    clearArrows();
     setGameStarted(true);
     let { row, col } = figurePosition; // Use row and col
 
     for (let command of commands) {
       let newRow = row;
       let newCol = col;
-
-      switch (command) {
+  
+      switch (command.commandType) {
         case "up":
           newRow = command.row;
           break;
@@ -233,7 +246,7 @@ export const Games = () => {
           break;
       }
       if (isWallPosition(newRow, newCol)) {
-        openModal("Collision with a wall! Resetting the game...");
+        openModal("Du råkade springa rakt in i väggen, vi testar igen!");
         resetGame();
         return;
       }
@@ -287,16 +300,19 @@ export const Games = () => {
         break;
       }
       case "light":
-        checkLamp(row, col);
+        newCommand.commandType = "light";
         break;
       case "eat":
-        checkFruit(row, col);
+        newCommand.commandType = "eat";
         break;
+
       default:
         break;
     }
 
     setCommands((prevCommands) => [...prevCommands, newCommand]);
+    setDisplayedCommands((prev) => [...prev, newCommand]);
+
     setCurrentCommandPosition({ row: newCommand.row, col: newCommand.col });
   };
 
@@ -322,7 +338,7 @@ export const Games = () => {
 
   useEffect(() => {
     if (!gameStarted) return;
-
+    console.log("Command Length :",commands.length);
     const checkCompletion = (row, col) => {
       if (row !== flagPosition.row || col !== flagPosition.col) {
         openModal("Försök igen, måste avsluta på flaggan!");
@@ -389,19 +405,30 @@ export const Games = () => {
         {wallPosition.map((position, index) => (
           <Wall key={index} position={position} />
         ))}
-        {commands.map((command) => (
-          <FontAwesomeIcon
-            icon={getIcon(command.commandType)}
-            style={{
-              width: "50px",
-              height: "50px",
-              position: "absolute",
-              top: `${(command.row - 1) * 50}px`,
-              left: `${(command.col - 1) * 50}px`,
-              zIndex: 1,
-            }}
-          />
-        ))}
+        {displayedCommands.map((command, index) => {
+  console.log("Command:", command); // Debugging line
+
+  if (command.commandType === "light" || command.commandType === "eat") {
+    // Skip rendering an icon for "light" and "eat" commands
+    return null;
+  }
+  const icon = getIcon(command.commandType);
+  return icon ? (
+    <FontAwesomeIcon
+      key={index}
+      icon={icon}
+      style={{
+        width: "50px",
+        height: "50px",
+        position: "absolute",
+        top: `${(command.row - 1) * 50}px`,
+        left: `${(command.col - 1) * 50}px`,
+        zIndex: 1,
+      }}
+    />
+  ) : null;
+})}
+
       </div>
 
       <Modal
