@@ -5,9 +5,9 @@ import { Symbols } from "../../Components/symbols/Symbols";
 import { useNavigate } from "react-router-dom";
 import { EasyCss } from "../../Components/challenges/easy/easy-css/EasyCss";
 import { EasyHtml } from "../../Components/challenges/easy/easy-html/EasyHtml";
-import DragAndDrop from "../../Components/DragAndDrop";
-import PathGame from "../../Components/PathGame";
-import SimpleWebsite from "../../Components/SimpleWebsite";
+// import DragAndDrop from "../../Components/DragAndDrop";
+// import PathGame from "../../Components/PathGame";
+// import SimpleWebsite from "../../Components/SimpleWebsite";
 
 export const ChallengeEasy = () => {
 const [isFinished, setIsFinished] = useState(false);
@@ -40,9 +40,9 @@ const navigate = useNavigate();
           <button className="start-button" onClick={() => {setStartEasyHtml(true); setStartEasyCss(false)}}>STARTA!</button>
           </div>
         </div>
-        <DragAndDrop />
+        {/* <DragAndDrop />
         <PathGame />
-        <SimpleWebsite />
+        <SimpleWebsite /> */}
         </div>
       ) : startEasyCss ? (
           <EasyCss />

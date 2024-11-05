@@ -29,24 +29,25 @@
     50% { border-color: $off-black; }
   }
 
-
-
   & > .challange-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    //flex-wrap: wrap;
     gap: 2rem;
-    width: 50%;
-  
-
+    width: 60%;
+    @media (max-width: 1250px) {
+      width: 80%;
+    }
+    @media (max-width: 1024px) {
+      width: 100%;
+    }
+    
     & > .challange-easy, 
     .challange-hard,
     .challange-game { 
       padding: .5rem; 
       box-sizing: border-box; 
       border-radius: .5rem;
-      //flex-basis: calc(50% - 1.5rem);
       
       & > .inner { 
         height: 100%; 
