@@ -8,7 +8,7 @@ export const LandingPage = () => {
 
   return (
     <div className="landing-page">
-      {/* <h1 className="heading">Välkommen till årets CODE CHALLENGE!</h1> */}
+      <h1 className="heading">CODE CHALLENGE!</h1>
       <div className="challange-wrapper">
         <div className="challange-easy"onClick={() => navigate('/challenge-easy')}>
           <div className="inner">
