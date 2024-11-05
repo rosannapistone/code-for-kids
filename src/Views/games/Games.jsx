@@ -5,7 +5,7 @@ import Flag from "../../Components/figures/Flag";
 import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
 import Wall from "../../Components/figures/Wall";
-import Lever from "../../Components/figures/Lever"
+import Lever from "../../Components/figures/Lever";
 import Modal from "react-modal";
 import "./games-view.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,6 +39,7 @@ export const Games = () => {
   const [leverPosition, setLeverPosition] = useState({row: 0, col: 0});
   const [wallPosition, setWallPosition] = useState([]);
 
+
   const numRows = 4;
   const numCols = 12;
 
@@ -46,13 +47,23 @@ export const Games = () => {
     return wallPosition.some(wall => wall.row === row && wall.col === col);
   };
 
-  const checkLever = (row, col) => {
-    if (row === leverPosition?.row && col === leverPosition?.col)
-    {
-      setLeverFlipped(!leverFlipped);
+  const deleteWall = (row, col) => {
+    setWallPosition((prevWalls) => 
+      prevWalls.filter((wall) => !(wall.row === row && wall.col === col))
+    );
+  };
 
+  const checkLever = (row, col) => {
+    if (row === leverPosition?.row && col === leverPosition?.col) {
+      setLeverFlipped((prev) => {
+        const newFlipStatus = !prev;
+        if (newFlipStatus) {
+          deleteWall(4, 11); // Remove the specific wall when lever is flipped
+        }
+        return newFlipStatus;
+      });
     }
-    }
+  };
 
 
   const firstLevel = useCallback(() => {
@@ -65,8 +76,10 @@ export const Games = () => {
     setLampPosition({ row: 2, col: 4 });
     setFruitPosition({ row: 2, col: 7 });
     setFlagPosition({ row: 2, col: 10 });
+    setLeverPosition();
+
     setWallPosition([]);
-    setLeverPosition({row: 1, col: 1});
+
     openModal("Välkommen till första nivån!", true);
   }, []); 
 
@@ -77,7 +90,6 @@ export const Games = () => {
   const goToLandingPage = () => {
     navigate("/");
   };
-
 
 
   const nextLevel = () => {
@@ -113,7 +125,8 @@ export const Games = () => {
     setLampPosition({ row: 3, col: 3 }); 
     setFruitPosition({ row: 3, col: 5 });
     setFlagPosition({ row: 4, col: 12 });
-
+    setLeverPosition({row: 1, col: 1});
+ 
     setWallPosition([
       { row: 2, col: 4 },
       { row: 3, col: 4 },
@@ -215,6 +228,10 @@ export const Games = () => {
       setFigurePosition({ row, col });
       checkLever(row, col);
 
+      if(leverFlipped)
+        {
+          deleteWall(4, 11);
+        }
       // Wait 0.5 seconds before executing the next command
       await delay(500);
     }
@@ -310,14 +327,6 @@ export const Games = () => {
     lampLit,
     fruitEaten,
   ]);
-
-
-  // useEffect(() => {
-
-  //   checkLever(figurePosition.row, figurePosition.col);
-  // }, [
-  //   figurePosition,
-  // ]);
 
   return (
     <div style={{ textAlign: "center" }}>
