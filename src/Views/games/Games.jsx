@@ -6,6 +6,9 @@ import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
 import Wall from "../../Components/figures/Wall";
 import Lever from "../../Components/figures/Lever";
+import Door from "../../Components/figures/Door";
+import Key from "../../Components/figures/Key";
+
 import Modal from "react-modal";
 import "./games-view.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -61,6 +64,8 @@ export const Games = () => {
   const [fruitPosition, setFruitPosition] = useState({ row: 0, col: 0 });
   const [flagPosition, setFlagPosition] = useState({ row: 0, col: 0 });
   const [leverPosition, setLeverPosition] = useState({ row: 0, col: 0 });
+  const [doorPosition, setDoorPosition] = useState({row: 0, col: 0});
+  const [keyPosition, setKeyPosition] = useState({row:0, col:0});
   const [wallPosition, setWallPosition] = useState([]);
 
   const numRows = 4;
@@ -70,9 +75,9 @@ export const Games = () => {
     return wallPosition.some((wall) => wall.row === row && wall.col === col);
   };
 
-  const deleteWall = (row, col) => {
-    setWallPosition((prevWalls) =>
-      prevWalls.filter((wall) => !(wall.row === row && wall.col === col))
+  const unlockDoor = (row, col) => {
+    setDoorPosition((prevDoors) =>
+      prevDoors.filter((door) => !(door.row === row && door.col === col))
     );
   };
 
@@ -81,7 +86,7 @@ export const Games = () => {
       setLeverFlipped((prev) => {
         const newFlipStatus = !prev;
         if (newFlipStatus) {
-          deleteWall(4, 11);
+          unlockDoor(4, 11);
         }
         return newFlipStatus;
       });
@@ -104,7 +109,8 @@ export const Games = () => {
     setFruitPosition({ row: 2, col: 7 });
     setFlagPosition({ row: 2, col: 10 });
     setLeverPosition();
-
+    setDoorPosition();
+    setKeyPosition();
     setWallPosition([]);
 
     openModal("Välkommen till första nivån!", true);
@@ -128,6 +134,10 @@ export const Games = () => {
     setLampPosition({ row: 1, col: 6 });
     setFruitPosition({ row: 4, col: 9 });
     setFlagPosition({ row: 1, col: 12 });
+    setLeverPosition();
+    setDoorPosition();
+    setKeyPosition();
+
     setWallPosition([
       { row: 2, col: 6 },
       { row: 3, col: 6 },
@@ -151,7 +161,7 @@ export const Games = () => {
     setLampPosition({ row: 3, col: 3 });
     setFruitPosition({ row: 3, col: 5 });
     setFlagPosition({ row: 4, col: 12 });
-    setLeverPosition({ row: 1, col: 8 });
+    setKeyPosition({ row: 1, col: 8 });
 
     setWallPosition([
       { row: 2, col: 4 },
@@ -167,8 +177,9 @@ export const Games = () => {
 
       { row: 3, col: 11 },
       { row: 3, col: 12 },
-      { row: 4, col: 11 },
     ]);
+
+    setDoorPosition({row: 4, col: 11})
     openModal("Välkommen till sista nivån!", true);
   };
 
@@ -257,7 +268,7 @@ export const Games = () => {
       checkLever(row, col);
 
       if (leverFlipped) {
-        deleteWall(4, 11);
+        unlockDoor(4, 11);
       }
       await delay(500);
     }
@@ -399,6 +410,9 @@ export const Games = () => {
         {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
         {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
         {flagPosition && <Flag position={flagPosition} />}
+        {doorPosition && <Door position={doorPosition} />}
+        {keyPosition && <Key position={keyPosition} />}
+
         {leverPosition && (
           <Lever position={leverPosition} flipped={leverFlipped} />
         )}
