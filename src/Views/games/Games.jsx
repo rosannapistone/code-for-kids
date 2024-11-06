@@ -77,6 +77,37 @@ export const Games = () => {
   const numRows = 4;
   const numCols = 12;
 
+  // Function to reset the game
+  const resetGame = useCallback(() => {
+    setFigurePosition({ row: 4, col: 1 });
+    setCurrentCommandPosition({ row: 4, col: 1 });
+    clearArrows();
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setrobotWithKey(false);
+    setDoorPosition({row:4, col:11});
+    setKeyPosition({row:1, col: 8});
+    setCommands([]);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsOpen(false);
+    resetGame();
+  }, [resetGame]);
+
+  const openModal = useCallback((content, autoClose = false) => {
+    setModalContent(content); 
+    setIsOpen(true);
+    if (autoClose) {
+      setTimeout(() => {
+        closeModal();
+      }, 2000);
+    }
+  }, [closeModal]);
+
+
+
   const isWallPosition = (row, col) => {
     return wallPosition.some((wall) => wall.row === row && wall.col === col);
   };
@@ -95,7 +126,6 @@ export const Games = () => {
     if (row === keyPosition?.row && col === keyPosition?.col) {
       setKeyPosition(null);
       setrobotWithKey(true);
-      console.log("Key picked up - robotWithKey set to true");
     }
   };
 
@@ -116,8 +146,6 @@ export const Games = () => {
     setKeyPosition(null);
     setWallPosition([]);
     setPortalPosition([]);
-
-    openModal("Välkommen till första nivån!", true);
   }, []);
 
   
@@ -241,37 +269,6 @@ export const Games = () => {
     }
   };
 
-  function openModal(content, autoClose = false) {
-    setModalContent(content); 
-    setIsOpen(true);
-    if (autoClose) {
-      setTimeout(() => {
-        closeModal();
-      }, 2000);
-    }
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-    resetGame();
-  }
-
-  // Function to reset the game
-  const resetGame = () => {
-    setFigurePosition({ row: 4, col: 1 });
-    setCurrentCommandPosition({ row: 4, col: 1 });
-    clearArrows();
-    setLampLit(false);
-    setFruitEaten(false);
-    setGameStarted(false);
-    setrobotWithKey(false);
-    setCommands([]);
-    if (currentLevel === 3)
-    {
-      setDoorPosition({row:4, col:11})
-      setKeyPosition({row:1,col:1});
-    }
-  };
 
   // Function to add a delay between commands
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -404,6 +401,10 @@ export const Games = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("CMD Pos Row", currentCommandPosition.row, "CMD Pos Col:", currentCommandPosition.col);
+
+  }, [currentCommandPosition])
   const handleCommandClick = (command) => {
     calculateCommands(command);
   };
@@ -442,6 +443,7 @@ export const Games = () => {
     commands.length,
     lampLit,
     fruitEaten,
+    openModal
   ]);
 
   return (
@@ -471,8 +473,8 @@ export const Games = () => {
         {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
         {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
         {flagPosition && <Flag position={flagPosition} />}
-        {doorPosition && <Door position={doorPosition} />}
-        {keyPosition && <Key position={keyPosition}  />}
+        {(doorPosition &&currentLevel === 3 ) && <Door position={doorPosition} />}
+        {(keyPosition &&currentLevel === 3) && <Key position={keyPosition}  />}
         {portalPosition.map((position, index) => (<Portal key={index} position={position} />))}
         {wallPosition.map((position, index) => (<Wall key={index} position={position} />))}
         {displayedCommands.map((command, index) => {
@@ -586,6 +588,7 @@ export const Games = () => {
 
         <button
           onClick={() => handleCommandClick("light")}
+          disabled = {!(currentCommandPosition?.row === lampPosition?.row && currentCommandPosition?.col === lampPosition?.col)}
           style={{
             padding: "10px",
             margin: "10px",
@@ -595,14 +598,15 @@ export const Games = () => {
             minWidth: "120px",
             cursor: "pointer",
             justifyContent: "space-around",
-          }}
+          }}          
         >
-          Tänd Lampa
+        Tänd Lampa
           <FontAwesomeIcon icon={faLightbulb} />
         </button>
 
         <button
           onClick={() => handleCommandClick("eat")}
+          disabled = {!(currentCommandPosition?.row === fruitPosition?.row && currentCommandPosition?.col === fruitPosition?.col)}
           style={{
             padding: "10px",
             margin: "10px",

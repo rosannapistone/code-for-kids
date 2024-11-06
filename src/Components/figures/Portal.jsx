@@ -1,6 +1,6 @@
 import React from "react";
 import portal1 from "../../Assets/icons/png/portal1.png"; 
-import portal2 from "../../Assets/icons/png/portal2.png";
+//import portal2 from "../../Assets/icons/png/portal2.png";
 
 const Portal = ({position}) => {
   return (
