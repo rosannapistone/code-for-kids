@@ -5,9 +5,9 @@ import Flag from "../../Components/figures/Flag";
 import Robot from "../../Components/figures/Robot";
 import Lamp from "../../Components/figures/Lamp";
 import Wall from "../../Components/figures/Wall";
-import Lever from "../../Components/figures/Lever";
 import Door from "../../Components/figures/Door";
 import Key from "../../Components/figures/Key";
+import Portal from "../../Components/figures/Portal";
 
 import Modal from "react-modal";
 import "./games-view.scss";
@@ -41,6 +41,12 @@ const getIcon = (commandType) => {
   }
 };
 
+const levelLabels = {
+  1: "Andra nivån",
+  2: "Tredje nivån",
+  3: "Första nivån",
+  4: "Fjärde nivån",
+};
 
 
 export const Games = () => {
@@ -55,19 +61,19 @@ export const Games = () => {
   });
   const [lampLit, setLampLit] = useState(false);
   const [fruitEaten, setFruitEaten] = useState(false);
+  const [robotWithKey, setrobotWithKey] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
-  const [leverFlipped, setLeverFlipped] = useState(false);
 
   const [lampPosition, setLampPosition] = useState({ row: 0, col: 0 });
   const [fruitPosition, setFruitPosition] = useState({ row: 0, col: 0 });
   const [flagPosition, setFlagPosition] = useState({ row: 0, col: 0 });
-  const [leverPosition, setLeverPosition] = useState({ row: 0, col: 0 });
   const [doorPosition, setDoorPosition] = useState({row: 0, col: 0});
-  const [keyPosition, setKeyPosition] = useState({row:0, col:0});
+  const [keyPosition, setKeyPosition] = useState({row: 0, col: 0});
+  const [portalPosition, setPortalPosition] = useState([]);
   const [wallPosition, setWallPosition] = useState([]);
-
+  
   const numRows = 4;
   const numCols = 12;
 
@@ -75,24 +81,23 @@ export const Games = () => {
     return wallPosition.some((wall) => wall.row === row && wall.col === col);
   };
 
-  const unlockDoor = (row, col) => {
-    setDoorPosition((prevDoors) =>
-      prevDoors.filter((door) => !(door.row === row && door.col === col))
-    );
-  };
+  useEffect(() => {
+    if (
+      robotWithKey &&
+      figurePosition.row === doorPosition?.row &&
+      figurePosition.col === doorPosition?.col - 1
+    ) {
+      setDoorPosition(null);
+    }
+  }, [robotWithKey, figurePosition, doorPosition]);
 
-  const checkLever = (row, col) => {
-    if (row === leverPosition?.row && col === leverPosition?.col) {
-      setLeverFlipped((prev) => {
-        const newFlipStatus = !prev;
-        if (newFlipStatus) {
-          unlockDoor(4, 11);
-        }
-        return newFlipStatus;
-      });
+  const pickUpKey = (row, col) => {
+    if (row === keyPosition?.row && col === keyPosition?.col) {
+      setKeyPosition(null);
+      setrobotWithKey(true);
+      console.log("Key picked up - robotWithKey set to true");
     }
   };
-
 
   const clearArrows = () => {
     setDisplayedCommands([]);
@@ -103,19 +108,19 @@ export const Games = () => {
     setLampLit(false);
     setFruitEaten(false);
     setGameStarted(false);
-    setLeverFlipped(false);
     setCommands([]);
     setLampPosition({ row: 2, col: 4 });
     setFruitPosition({ row: 2, col: 7 });
     setFlagPosition({ row: 2, col: 10 });
-    setLeverPosition();
-    setDoorPosition();
-    setKeyPosition();
+    setDoorPosition(null);
+    setKeyPosition(null);
     setWallPosition([]);
+    setPortalPosition([]);
 
     openModal("Välkommen till första nivån!", true);
   }, []);
 
+  
   useEffect(() => {
     firstLevel();
   }, [firstLevel]);
@@ -134,10 +139,9 @@ export const Games = () => {
     setLampPosition({ row: 1, col: 6 });
     setFruitPosition({ row: 4, col: 9 });
     setFlagPosition({ row: 1, col: 12 });
-    setLeverPosition();
-    setDoorPosition();
-    setKeyPosition();
-
+    setDoorPosition(null);
+    setKeyPosition(null);
+    setPortalPosition([]);
     setWallPosition([
       { row: 2, col: 6 },
       { row: 3, col: 6 },
@@ -151,18 +155,19 @@ export const Games = () => {
     openModal("Välkommen till andra nivån!", true);
   };
 
-  const lastLevel = () => {
+  const thirdLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
     setFruitEaten(false);
     setGameStarted(false);
+    setrobotWithKey(false);
     setCommands([]);
 
     setLampPosition({ row: 3, col: 3 });
     setFruitPosition({ row: 3, col: 5 });
     setFlagPosition({ row: 4, col: 12 });
     setKeyPosition({ row: 1, col: 8 });
-
+    setPortalPosition([]);
     setWallPosition([
       { row: 2, col: 4 },
       { row: 3, col: 4 },
@@ -180,7 +185,43 @@ export const Games = () => {
     ]);
 
     setDoorPosition({row: 4, col: 11})
-    openModal("Välkommen till sista nivån!", true);
+    openModal("Välkommen till tredje nivån!", true);
+  };
+
+  const fourthLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setrobotWithKey(false);
+    setCommands([]);
+
+    setLampPosition(null);
+    setFruitPosition(null);
+    setDoorPosition(null)
+
+    setFlagPosition({row:2, col:12});
+    setPortalPosition([
+      { row: 2, col: 3},
+      { row: 2, col: 8},
+    ]);
+    setKeyPosition({row: 2, col: 6});
+
+
+
+    setWallPosition([
+      { row: 1, col: 4 },
+      { row: 2, col: 4 },
+      { row: 3, col: 4 },
+      { row: 4, col: 4 },
+
+      { row: 1, col: 7 },
+      { row: 2, col: 7 },
+      { row: 3, col: 7 },
+      { row: 4, col: 7 },
+    ]);
+
+    openModal("Välkommen till fjärde nivån!", true);
   };
 
   const handleLevelChange = () => {
@@ -188,16 +229,20 @@ export const Games = () => {
       nextLevel();
       setCurrentLevel(2);
     } else if (currentLevel === 2) {
-      lastLevel();
+      thirdLevel();
       setCurrentLevel(3);
-    } else {
+    } else if (currentLevel === 3){
+      fourthLevel();
+      setCurrentLevel(4);
+    }
+      else {
       firstLevel();
       setCurrentLevel(1);
     }
   };
 
   function openModal(content, autoClose = false) {
-    setModalContent(content); // Set the dynamic content
+    setModalContent(content); 
     setIsOpen(true);
     if (autoClose) {
       setTimeout(() => {
@@ -215,11 +260,17 @@ export const Games = () => {
   const resetGame = () => {
     setFigurePosition({ row: 4, col: 1 });
     setCurrentCommandPosition({ row: 4, col: 1 });
+    clearArrows();
     setLampLit(false);
     setFruitEaten(false);
     setGameStarted(false);
-    setLeverFlipped(false);
+    setrobotWithKey(false);
     setCommands([]);
+    if (currentLevel === 3)
+    {
+      setDoorPosition({row:4, col:11})
+      setKeyPosition({row:1,col:1});
+    }
   };
 
   // Function to add a delay between commands
@@ -261,15 +312,25 @@ export const Games = () => {
         resetGame();
         return;
       }
+
+      /*
+      if (newRow === portalPosition1.row && newCol === portalPosition1.col && !portalTransfer) {
+        setPortalTransfer(true);  // Toggle portalTransfer
+        newRow = portalPosition2.row;  // Move to the other portal
+        newCol = portalPosition2.col;
+    } else if (newRow === portalPosition2.row && newCol === portalPosition2.col && portalTransfer) {
+        setPortalTransfer(false);  // Toggle portalTransfer back
+        newRow = portalPosition1.row;  // Move to the other portal
+        newCol = portalPosition1.col;
+    }
+*/
       row = newRow;
       col = newCol;
 
       setFigurePosition({ row, col });
-      checkLever(row, col);
-
-      if (leverFlipped) {
-        unlockDoor(4, 11);
-      }
+      pickUpKey(row, col);
+      //unlockDoor(row, col, robotWithKey);
+      
       await delay(500);
     }
 
@@ -349,7 +410,7 @@ export const Games = () => {
 
   useEffect(() => {
     if (!gameStarted) return;
-    console.log("Command Length :",commands.length);
+    //console.log("Command Length :",commands.length);
     const checkCompletion = (row, col) => {
       if (row !== flagPosition.row || col !== flagPosition.col) {
         openModal("Försök igen, måste avsluta på flaggan!");
@@ -406,21 +467,16 @@ export const Games = () => {
         }}
       >
         {/* Use the components for each figure */}
-        <Robot position={figurePosition} />
+        <Robot position={figurePosition} withKey={robotWithKey} />
         {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
         {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
         {flagPosition && <Flag position={flagPosition} />}
         {doorPosition && <Door position={doorPosition} />}
-        {keyPosition && <Key position={keyPosition} />}
-
-        {leverPosition && (
-          <Lever position={leverPosition} flipped={leverFlipped} />
-        )}
-        {wallPosition.map((position, index) => (
-          <Wall key={index} position={position} />
-        ))}
+        {keyPosition && <Key position={keyPosition}  />}
+        {portalPosition.map((position, index) => (<Portal key={index} position={position} />))}
+        {wallPosition.map((position, index) => (<Wall key={index} position={position} />))}
         {displayedCommands.map((command, index) => {
-  console.log("Command:", command); // Debugging line
+  //console.log("Command:", command); 
 
   if (command.commandType === "light" || command.commandType === "eat") {
     // Skip rendering an icon for "light" and "eat" commands
@@ -607,11 +663,7 @@ export const Games = () => {
             justifyContent: "center",
           }}
         >
-          {currentLevel === 1
-            ? "Andra nivån"
-            : currentLevel === 2
-            ? "Sista nivån"
-            : "Första nivån"}
+          {levelLabels[currentLevel]}
         </button>
         <button
           onClick={goToLandingPage}

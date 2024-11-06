@@ -1,12 +1,12 @@
 import React from "react";
-import robot from "../../Assets/icons/png/robot.png"; 
-import robotKey from "../../Assets/icons/png/robotKey.png";
+import portal1 from "../../Assets/icons/png/portal1.png"; 
+import portal2 from "../../Assets/icons/png/portal2.png";
 
-const Robot = ({ position, withKey }) => {
-  return withKey ? (
+const Portal = ({position}) => {
+  return (
     <img
-      src={robotKey}
-      alt="Key"
+      src={portal1}
+      alt="P1"
       style={{
         width: "50px",
         height: "50px",
@@ -14,13 +14,15 @@ const Robot = ({ position, withKey }) => {
         top: `${(position.row - 1) * 50}px`,
         left: `${(position.col - 1) * 50}px`,
         zIndex: 1,
-        transition: "top 0.5s ease, left 0.5s ease", 
       }}
     ></img>
-  ) : (
+  )
+};
+  
+  /* : (
     <img
-      src={robot}
-      alt="Robot"
+      src={portal2}
+      alt="p2"
       style={{
         width: "50px",
         height: "50px",
@@ -28,10 +30,9 @@ const Robot = ({ position, withKey }) => {
         top: `${(position.row - 1) * 50}px`,
         left: `${(position.col - 1) * 50}px`,
         zIndex: 1,
-        transition: "top 0.5s ease, left 0.5s ease", 
       }}
     ></img>
   );
 };
-
-export default Robot;
+*/
+export default Portal;
