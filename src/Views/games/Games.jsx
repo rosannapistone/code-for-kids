@@ -8,6 +8,8 @@ import Wall from "../../Components/figures/Wall";
 import Door from "../../Components/figures/Door";
 import Key from "../../Components/figures/Key";
 import Portal from "../../Components/figures/Portal";
+import Portal2 from "../../Components/figures/Portal2";
+import Chest from "../../Components/figures/Chest";
 
 import Modal from "react-modal";
 import "./games-view.scss";
@@ -22,6 +24,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 Modal.setAppElement("#root"); // Add this line for accessibility
 
+/* --- Function for accessing the right iconArrows ---*/
 const getIcon = (commandType) => {
   switch (commandType) {
     case "up":
@@ -40,44 +43,83 @@ const getIcon = (commandType) => {
       return null;
   }
 };
-
-const levelLabels = {
-  1: "Andra nivån",
-  2: "Tredje nivån",
-  3: "Första nivån",
-  4: "Fjärde nivån",
-};
-
-
+/* --- The whole game! --- */
 export const Games = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const navigate = useNavigate();
   const [commands, setCommands] = useState([]);
   const [displayedCommands, setDisplayedCommands] = useState([]); // for rendering arrows
   const [figurePosition, setFigurePosition] = useState({ row: 4, col: 1 });
-  const [currentCommandPosition, setCurrentCommandPosition] = useState({
-    row: 4,
-    col: 1,
-  });
+  const [currentCommandPosition, setCurrentCommandPosition] = useState({row: 4,col: 1,});
   const [lampLit, setLampLit] = useState(false);
+  const [chestOpen, setChestOpen] = useState(false);
   const [fruitEaten, setFruitEaten] = useState(false);
   const [robotWithKey, setrobotWithKey] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
 
+  const [riddleAttempts, setRiddleAttempts] = useState(0);
+  const [riddleAnswer, setRiddleAnswer] = useState("");
+  const [showRiddleInput, setShowRiddleInput] = useState(false);
+
   const [lampPosition, setLampPosition] = useState({ row: 0, col: 0 });
   const [fruitPosition, setFruitPosition] = useState({ row: 0, col: 0 });
   const [flagPosition, setFlagPosition] = useState({ row: 0, col: 0 });
   const [doorPosition, setDoorPosition] = useState({row: 0, col: 0});
   const [keyPosition, setKeyPosition] = useState({row: 0, col: 0});
+  const [chestPosition, setChestPosition] = useState({row: 0, col:0});
   const [portalPosition, setPortalPosition] = useState([]);
+  const [portalPosition2, setPortalPosition2] = useState([]);
   const [wallPosition, setWallPosition] = useState([]);
   
   const numRows = 4;
   const numCols = 12;
 
-  // Function to reset the game
+ 
+  const portalPosition1 = { row: 4, col: 3 };
+  const portalPosition11 = { row: 4, col: 5 };
+
+  const portalPosition22 = {row : 1, col: 8};
+  const portalPosition222 = {row: 1, col: 6};
+
+  /* --- Function for updating the arrows --- */
+  const updateArrowPosition = (newRow, newCol) => {
+    setDisplayedCommands((prevCommands) => [
+      ...prevCommands,
+      { row: newRow, col: newCol},
+    ]);
+  };
+
+  const correctRiddleAnswer = "treasure"; // Replace this with the actual answer
+
+/* --- Function for handling the chest, with a riddle and answer (3 times try) --- */
+const handleRiddleSubmit = () => {
+  if (riddleAnswer.toLowerCase() === correctRiddleAnswer.toLowerCase()) {
+    openModal("Rätt svar! Du öppnade kistan!");
+    setChestOpen(true);
+    setShowRiddleInput(false);
+  } else {
+    setRiddleAttempts((prev) => prev + 1);
+    if (riddleAttempts >= 2) {
+      openModal("Fel svar tre gånger! Du måste börja om.");
+      resetGame();
+    } else {
+      openModal("Fel svar. Försök igen!");
+    }
+  }
+  setRiddleAnswer("");
+};
+
+  const checkChest = (row, col) => {
+    if (row === chestPosition?.row && col === chestPosition?.col && currentLevel === 5) {
+      openModal("Du hittade en kista! Svara på gåtan:");
+      setShowRiddleInput(true);
+      setRiddleAttempts(0);
+    }
+  };
+
+  /* --- Function for reseting the game */
   const resetGame = useCallback(() => {
     setFigurePosition({ row: 4, col: 1 });
     setCurrentCommandPosition({ row: 4, col: 1 });
@@ -91,11 +133,13 @@ export const Games = () => {
     setCommands([]);
   }, []);
 
+  /* --- Function for closing the popup ---*/
   const closeModal = useCallback(() => {
     setIsOpen(false);
     resetGame();
   }, [resetGame]);
 
+  /* --- Function for popup - closes after 2 second if not pressed ---*/
   const openModal = useCallback((content, autoClose = false) => {
     setModalContent(content); 
     setIsOpen(true);
@@ -106,8 +150,7 @@ export const Games = () => {
     }
   }, [closeModal]);
 
-
-
+/* --- Function for checking if robot is running into the wall!!! ---*/
   const isWallPosition = (row, col) => {
     return wallPosition.some((wall) => wall.row === row && wall.col === col);
   };
@@ -123,7 +166,7 @@ export const Games = () => {
   }, [robotWithKey, figurePosition, doorPosition]);
 
   const pickUpKey = (row, col) => {
-    if (row === keyPosition?.row && col === keyPosition?.col) {
+    if (row === keyPosition?.row && col === keyPosition?.col && currentLevel === 3) {
       setKeyPosition(null);
       setrobotWithKey(true);
     }
@@ -132,7 +175,7 @@ export const Games = () => {
   const clearArrows = () => {
     setDisplayedCommands([]);
   };
-
+/*--- The third level - includes a lamp and apple ---*/
   const firstLevel = useCallback(() => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
@@ -142,13 +185,15 @@ export const Games = () => {
     setLampPosition({ row: 2, col: 4 });
     setFruitPosition({ row: 2, col: 7 });
     setFlagPosition({ row: 2, col: 10 });
+    setChestPosition(null);
     setDoorPosition(null);
     setKeyPosition(null);
     setWallPosition([]);
     setPortalPosition([]);
+    setPortalPosition2([]);
+
   }, []);
 
-  
   useEffect(() => {
     firstLevel();
   }, [firstLevel]);
@@ -156,8 +201,8 @@ export const Games = () => {
   const goToLandingPage = () => {
     navigate("/");
   };
-
-  const nextLevel = () => {
+/*--- The third level - includes a wall, lamp and apple ---*/
+  const secondLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
     setFruitEaten(false);
@@ -169,7 +214,9 @@ export const Games = () => {
     setFlagPosition({ row: 1, col: 12 });
     setDoorPosition(null);
     setKeyPosition(null);
+    setChestPosition(null);
     setPortalPosition([]);
+    setPortalPosition2([]);
     setWallPosition([
       { row: 2, col: 6 },
       { row: 3, col: 6 },
@@ -182,7 +229,7 @@ export const Games = () => {
 
     openModal("Välkommen till andra nivån!", true);
   };
-
+/*--- The third level - includes a wall, lamp and apple and key with a door---*/
   const thirdLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
@@ -190,12 +237,13 @@ export const Games = () => {
     setGameStarted(false);
     setrobotWithKey(false);
     setCommands([]);
-
+    setChestPosition(null);
     setLampPosition({ row: 3, col: 3 });
     setFruitPosition({ row: 3, col: 5 });
     setFlagPosition({ row: 4, col: 12 });
     setKeyPosition({ row: 1, col: 8 });
     setPortalPosition([]);
+    setPortalPosition2([]);
     setWallPosition([
       { row: 2, col: 4 },
       { row: 3, col: 4 },
@@ -215,7 +263,7 @@ export const Games = () => {
     setDoorPosition({row: 4, col: 11})
     openModal("Välkommen till tredje nivån!", true);
   };
-
+/*--- The fourth level - includes portals ---*/
   const fourthLevel = () => {
     setFigurePosition({ row: 4, col: 1 });
     setLampLit(false);
@@ -227,58 +275,114 @@ export const Games = () => {
     setLampPosition(null);
     setFruitPosition(null);
     setDoorPosition(null)
-
+    setChestPosition(null);
     setFlagPosition({row:2, col:12});
     setPortalPosition([
-      { row: 2, col: 3},
-      { row: 2, col: 8},
+      portalPosition1,
+      portalPosition11,
     ]);
+    setPortalPosition2([
+      portalPosition22,
+      portalPosition222,
+    ])
+
+
+
     setKeyPosition({row: 2, col: 6});
-
-
 
     setWallPosition([
       { row: 1, col: 4 },
       { row: 2, col: 4 },
       { row: 3, col: 4 },
       { row: 4, col: 4 },
-
+      /*{ row: 2, col: 6 },*/
       { row: 1, col: 7 },
       { row: 2, col: 7 },
       { row: 3, col: 7 },
       { row: 4, col: 7 },
+      
     ]);
 
     openModal("Välkommen till fjärde nivån!", true);
   };
 
-  const handleLevelChange = () => {
-    if (currentLevel === 1) {
-      nextLevel();
-      setCurrentLevel(2);
-    } else if (currentLevel === 2) {
-      thirdLevel();
-      setCurrentLevel(3);
-    } else if (currentLevel === 3){
-      fourthLevel();
-      setCurrentLevel(4);
-    }
-      else {
-      firstLevel();
-      setCurrentLevel(1);
-    }
+  /*--- The fifth level - includes chest and a password ---*/
+  const fifthLevel = () => {
+    setFigurePosition({ row: 4, col: 1 });
+    setLampLit(false);
+    setFruitEaten(false);
+    setGameStarted(false);
+    setrobotWithKey(false);
+    setCommands([]);
+
+    setLampPosition({row: 2, col: 4});
+    setFruitPosition({row: 2, col: 7});
+    setChestPosition({row: 2, col: 1});
+    //setChestPosition({row: 2, col: 10});
+    setDoorPosition(null)
+
+    setFlagPosition({row:2, col:11});
+    setPortalPosition([]);
+    setPortalPosition2([]);
+    setKeyPosition();
+
+    setWallPosition([
+      {row: 1, col: 0+1},
+      {row: 1, col: 0+2},
+      {row: 1, col: 0+3},
+      {row: 1, col: 0+4},
+      {row: 1, col: 1+4},
+      {row: 1, col: 2+4},
+      {row: 1, col: 3+4},
+      {row: 1, col: 4+4},
+      {row: 1, col: 5+4},
+      {row: 1, col: 6+4},
+      {row: 1, col: 7+4},
+      {row: 1, col: 8+4},
+
+      {row: 2, col: 8+4},
+
+      {row: 3, col: 8+4},
+      {row: 3, col: 7+4},
+      {row: 3, col: 5+4},
+      {row: 3, col: 4+4},
+      {row: 3, col: 6+4},
+      {row: 3, col: 3+4},
+      {row: 3, col: 2+4},
+      {row: 3, col: 1+4},
+      {row: 3, col: 0+4},
+      {row: 3, col: 0+3},
+      {row: 3, col: 0+2},
+
+      /*
+      {row: 4, col: 8+4},
+      {row: 4, col: 7+4},
+      {row: 4, col: 5+4},
+      {row: 4, col: 4+4},
+      {row: 4, col: 6+4},
+      {row: 4, col: 3+4},
+      {row: 4, col: 2+4},
+      {row: 4, col: 1+4},
+      {row: 4, col: 0+4},
+      {row: 4, col: 0+3},
+      */
+      {row: 4, col: 0+2},
+    ]);
+
+    openModal("Välkommen till femte nivån!", true);
   };
 
-
-  // Function to add a delay between commands
+  /* --- Function for creating a delay ---*/
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  /* ... Function for executing the commands that are init by the user ---*/
   const executeCommands = async () => {
     clearArrows();
     setGameStarted(true);
-    let { row, col } = figurePosition; // Use row and col
+    let { row, col } = figurePosition; 
 
     for (let command of commands) {
+      
       let newRow = row;
       let newCol = col;
   
@@ -310,30 +414,52 @@ export const Games = () => {
         return;
       }
 
-      /*
-      if (newRow === portalPosition1.row && newCol === portalPosition1.col && !portalTransfer) {
-        setPortalTransfer(true);  // Toggle portalTransfer
-        newRow = portalPosition2.row;  // Move to the other portal
-        newCol = portalPosition2.col;
-    } else if (newRow === portalPosition2.row && newCol === portalPosition2.col && portalTransfer) {
-        setPortalTransfer(false);  // Toggle portalTransfer back
-        newRow = portalPosition1.row;  // Move to the other portal
+      
+    
+      if (newRow === portalPosition1.row && newCol === portalPosition1.col && currentLevel === 4) {
+        newRow = portalPosition11.row;  
+        newCol = portalPosition11.col;
+        updateArrowPosition(newRow, newCol, command.commandType);
+      } else if (newRow === portalPosition11.row && newCol === portalPosition11.col && currentLevel===4) {
+        newRow = portalPosition1.row;  
         newCol = portalPosition1.col;
-    }
-*/
+        updateArrowPosition(newRow, newCol, command.commandType);
+      }
+      
+
+    if (newRow === portalPosition22.row && newCol === portalPosition22.col && currentLevel === 4) {
+      newRow = portalPosition222.row;  
+      newCol = portalPosition222.col;
+      updateArrowPosition(newRow, newCol, command.commandType);
+
+      }
+      else if (newRow === portalPosition222.row && newCol === portalPosition222.col && currentLevel === 4) {
+      newRow = portalPosition22.row;  
+      newCol = portalPosition22.col;
+      updateArrowPosition(newRow, newCol, command.commandType);
+
+      }
+  
       row = newRow;
       col = newCol;
-
+      
+  
       setFigurePosition({ row, col });
       pickUpKey(row, col);
-      //unlockDoor(row, col, robotWithKey);
-      
+      checkChest(row, col);
+
+ 
       await delay(500);
     }
 
     setCommands([]);
   };
 
+  const handleRiddleInputChange = (e) => {
+    setRiddleAnswer(e.target.value);
+  };
+
+    /* ... Function for calculatings the commands that are init by the user ---*/
   const calculateCommands = async (command) => {
     let { row, col } = currentCommandPosition;
 
@@ -382,9 +508,35 @@ export const Games = () => {
     setCommands((prevCommands) => [...prevCommands, newCommand]);
     setDisplayedCommands((prev) => [...prev, newCommand]);
 
+    
+    if (newCommand.row === portalPosition1.row && newCommand.col === portalPosition1.col && currentLevel===4) {
+      newCommand.row = portalPosition11.row;  
+      newCommand.col = portalPosition11.col;
+      //updateArrowPosition(newCommand.row, newCommand.col, command.commandType);
+    } else if (newCommand.row === portalPosition11.row && newCommand.col === portalPosition11.col && currentLevel===4) {
+      newCommand.row = portalPosition1.row;  
+      newCommand.col = portalPosition1.col;
+      //updateArrowPosition(newCommand.row, newCommand.col, command.commandType);
+  }
+  
+
+  if (newCommand.row === portalPosition22.row && newCommand.col === portalPosition22.col && currentLevel === 4) {
+    newCommand.row = portalPosition222.row;  
+    newCommand.col = portalPosition222.col;
+    updateArrowPosition(newCommand.row, newCommand.col, command.commandType);
+  
+  } else if (newCommand.row === portalPosition222.row && newCommand.col === portalPosition222.col && currentLevel === 4) {
+    newCommand.row = portalPosition22.row;  
+    newCommand.col = portalPosition22.col;
+    updateArrowPosition(newCommand.row, newCommand.col, command.commandType);    
+  }
+  
+ 
+ 
     setCurrentCommandPosition({ row: newCommand.row, col: newCommand.col });
   };
 
+  /* --- Function for check the robot is in the correct position for activate lamp ---*/
   const checkLamp = (row, col) => {
     if (row === lampPosition?.row && col === lampPosition?.col) {
       setLampLit(true);
@@ -393,6 +545,7 @@ export const Games = () => {
     }
   };
 
+  /* --- Function for check the robot is in the correct position for activate fruit ---*/
   const checkFruit = (row, col) => {
     if (row === fruitPosition?.row && col === fruitPosition?.col) {
       setFruitEaten(true);
@@ -402,13 +555,18 @@ export const Games = () => {
   };
 
   useEffect(() => {
-    console.log("CMD Pos Row", currentCommandPosition.row, "CMD Pos Col:", currentCommandPosition.col);
+    //console.log("CMD Pos Row", currentCommandPosition.row, "CMD Pos Col:", currentCommandPosition.col);
+    //console.log("Figure Pos Row", figurePosition.row, "Figure Pos Col:", figurePosition.col);
 
-  }, [currentCommandPosition])
+
+  }, [currentCommandPosition, figurePosition])
+
+
   const handleCommandClick = (command) => {
     calculateCommands(command);
   };
 
+  /* --- Function for check the robot/user forfil the requirements for completing the level ---*/
   useEffect(() => {
     if (!gameStarted) return;
     //console.log("Command Length :",commands.length);
@@ -473,9 +631,11 @@ export const Games = () => {
         {lampPosition && <Lamp position={lampPosition} lit={lampLit} />}
         {fruitPosition && <Fruit position={fruitPosition} eaten={fruitEaten} />}
         {flagPosition && <Flag position={flagPosition} />}
+        {chestPosition && <Chest position={chestPosition} />}
         {(doorPosition &&currentLevel === 3 ) && <Door position={doorPosition} />}
         {(keyPosition &&currentLevel === 3) && <Key position={keyPosition}  />}
         {portalPosition.map((position, index) => (<Portal key={index} position={position} />))}
+        {portalPosition2.map((position, index) => (<Portal2 key={index} position={position} />))}
         {wallPosition.map((position, index) => (<Wall key={index} position={position} />))}
         {displayedCommands.map((command, index) => {
   //console.log("Command:", command); 
@@ -504,188 +664,116 @@ export const Games = () => {
       </div>
 
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Game Modal"
-        className={"game-modal"}
-        overlayClassName={"game-modal-overlay"} // Add this for the overlay
-      >
-        <h2>{modalContent}</h2>
-        {!modalContent.includes("Välkommen till") && (
-          <button onClick={closeModal}>Spela igen!</button>
-        )}
-      </Modal>
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Game Modal"
+  className={"game-modal"}
+  overlayClassName={"game-modal-overlay"} // Add this for the overlay
+>
+  <h2>{modalContent}</h2>
+  {showRiddleInput && (
+    <div>
+      <input
+        type="text"
+        value={riddleAnswer}
+        onChange={handleRiddleInputChange}
+        placeholder="Skriv ditt svar här"
+      />
+      <button onClick={handleRiddleSubmit}>Skicka</button>
+    </div>
+  )}
+  {!modalContent.includes("Välkommen till") && !showRiddleInput && (
+    <button onClick={closeModal}>Spela igen!</button>
+  )}
+</Modal>
 
       {/* Command options */}
       <div id="command-container" style={{ marginTop: "20px" }}>
-        <button
-          onClick={() => handleCommandClick("up")}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffcc00",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Gå Upp
-          <FontAwesomeIcon icon={faArrowUp} />
-        </button>
+  <button
+    onClick={() => handleCommandClick("up")}
+    className="command-button"
+  >
+    Gå Upp
+    <FontAwesomeIcon icon={faArrowUp} />
+  </button>
 
-        <button
-          onClick={() => handleCommandClick("down")}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffcc00",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Gå Ner
-          <FontAwesomeIcon icon={faArrowDown} />
-        </button>
+  <button
+    onClick={() => handleCommandClick("down")}
+    className="command-button"
+  >
+    Gå Ner
+    <FontAwesomeIcon icon={faArrowDown} />
+  </button>
 
-        <button
-          onClick={() => handleCommandClick("left")}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffcc00",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Gå Vänster
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
+  <button
+    onClick={() => handleCommandClick("left")}
+    className="command-button"
+  >
+    Gå Vänster
+    <FontAwesomeIcon icon={faArrowLeft} />
+  </button>
 
-        <button
-          onClick={() => handleCommandClick("right")}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffcc00",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Gå Höger
-          <FontAwesomeIcon icon={faArrowRight} />
-        </button>
+  <button
+    onClick={() => handleCommandClick("right")}
+    className="command-button"
+  >
+    Gå Höger
+    <FontAwesomeIcon icon={faArrowRight} />
+  </button>
 
-        <button
-          onClick={() => handleCommandClick("light")}
-          disabled = {!(currentCommandPosition?.row === lampPosition?.row && currentCommandPosition?.col === lampPosition?.col)}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffd700",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}          
-        >
-        Tänd Lampa
-          <FontAwesomeIcon icon={faLightbulb} />
-        </button>
+  <button
+    onClick={() => handleCommandClick("light")}
+    disabled={!(currentCommandPosition?.row === lampPosition?.row && currentCommandPosition?.col === lampPosition?.col)}
+    className="command-button command-button--special"
+  >
+    Tänd Lampa
+    <FontAwesomeIcon icon={faLightbulb} />
+  </button>
 
-        <button
-          onClick={() => handleCommandClick("eat")}
-          disabled = {!(currentCommandPosition?.row === fruitPosition?.row && currentCommandPosition?.col === fruitPosition?.col)}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "#ffd700",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Ät Äpple
-          <FontAwesomeIcon icon={faAppleAlt} />
-        </button>
-        <button
-          onClick={resetGame}
-          style={{
-            padding: "10px",
-            margin: "10px",
-            backgroundColor: "red",
-            color: "white",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Rensa Kommandon
-        </button>
-        <button
-          onClick={executeCommands}
-          style={{
-            padding: "10px",
-            color: "white",
-            margin: "10px",
-            backgroundColor: "green",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "space-around",
-          }}
-        >
-          Kör!
-        </button>
-        <button
-          onClick={handleLevelChange}
-          style={{
-            padding: "10px",
-            color: "white",
-            margin: "10px",
-            backgroundColor: "purple",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "center",
-          }}
-        >
-          {levelLabels[currentLevel]}
-        </button>
-        <button
-          onClick={goToLandingPage}
-          style={{
-            padding: "10px",
-            color: "white",
-            margin: "10px",
-            backgroundColor: "blue",
-            border: "1px solid #000",
-            display: "inline-flex",
-            minWidth: "120px",
-            cursor: "pointer",
-            justifyContent: "center",
-          }}
-        >
-          Gå till startsidan
-        </button>
-      </div>
-    </div>
+  <button
+    onClick={() => handleCommandClick("eat")}
+    disabled={!(currentCommandPosition?.row === fruitPosition?.row && currentCommandPosition?.col === fruitPosition?.col)}
+    className="command-button command-button--special"
+  >
+    Ät Äpple
+    <FontAwesomeIcon icon={faAppleAlt} />
+  </button>
+</div>
+
+
+
+
+          <div className="level-button-container">
+          <button onClick={() => { goToLandingPage();}} className="homepage-button">
+            Gå till startsidan
+          </button>
+
+          <button onClick={() => { executeCommands();}} className="run-button">
+            Kör!
+          </button>
+
+          <button onClick={() => { resetGame();}} className="clear-button">
+            Rensa Kommandon
+          </button>
+          </div>
+
+        <div className="level-button-container">
+          <button onClick={() => { firstLevel(); setCurrentLevel(1); }} className="level-button">
+            Första Nivån
+          </button>
+          <button onClick={() => { secondLevel(); setCurrentLevel(2); }} className="level-button">
+            Andra Nivån
+          </button>
+          <button onClick={() => { thirdLevel(); setCurrentLevel(3); }} className="level-button">
+            Tredje Nivån
+          </button>
+          <button onClick={() => { fourthLevel(); setCurrentLevel(4); }} className="level-button">
+            Fjärde Nivån
+          </button>
+          <button onClick={() => { fifthLevel(); setCurrentLevel(5); }} className="level-button">
+            Femte Nivån
+          </button>
+        </div>
+        </div>
   );
 };

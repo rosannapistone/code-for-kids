@@ -23,3 +23,73 @@
     z-index: 999; /* Slightly lower than the modal content */
   }
   
+ /* games-view.scss */
+
+/* Base style for all command buttons */
+.command-button {
+  padding: 10px;
+  margin: 10px;
+  background-color: #ffcc00;
+  border: 1px solid #000;
+  display: inline-flex;
+  min-width: 120px;
+  cursor: pointer;
+  justify-content: space-around;
+  transition: background-color 0.3s ease; 
+  border-radius: 12px;
+}
+
+.command-button:hover {
+  background-color: #e6b800;
+}
+
+.level-button {
+  @extend .command-button;
+  background-color: purple;
+  color: white;
+  min-width: 160px;
+}
+
+.level-button:hover {
+  background-color: darkviolet;
+}
+
+.clear-button{
+  @extend .command-button;
+  background-color: #8d0d0d;
+  color: white;
+  min-width: 160px;
+}
+.clear-button:hover{
+  background-color: #770202;
+}
+
+.run-button{
+  @extend .command-button;
+  background-color: green;
+  color: white;
+  min-width: 160px;
+}
+
+.run-button:hover{
+  background-color: rgb(0, 77, 0);
+}
+
+
+.homepage-button{
+  @extend .command-button;
+  background-color: blue;
+  color:white;
+  min-width: 160px;
+}
+
+.homepage-button:hover{
+  background-color: rgb(53, 53, 255);
+}
+
+.level-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
