@@ -29,7 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch-css": "sass --watch src/scss:src/css"
+    "watch-css": "sass --watch src/scss:src/css",
+     "lint": "if [ $CI ]; then echo 'Skipping ESLint in CI'; else eslint .; fi"
   },
   "eslintConfig": {
     "extends": [
