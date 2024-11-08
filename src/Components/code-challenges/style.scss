@@ -1,0 +1,52 @@
+@import '../../Assets/styles/variables.scss';
+
+.code-challenge {
+  color: $off-black;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: 4rem 0 0;
+  & > .challenge-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    & > .challenge {
+      background-color: $off-black;
+      padding: .5rem; 
+      box-sizing: border-box; 
+      border-radius: .5rem;
+      width: 100%;
+      & > .inner {
+        box-sizing: border-box; 
+        color: $off-white;
+        padding: 1rem; 
+        border-radius: .5rem;
+        display: flex;
+        flex-direction: column;
+        border: .3rem solid $off-white; 
+        & > .instructions {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin: 4rem 1rem 0 0; 
+        
+          & > ul {
+            & > li {
+              font-family: 'IBMPlexSans'; 
+              margin: .5rem 0;
+            }
+          }
+          & > svg {
+            height: 3rem;
+          }
+        }
+
+        & > .cp_embed_wrapper {
+          margin: 1rem 0 0 0;
+        }
+       
+      }
+    }
+  }
+}

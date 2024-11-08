@@ -8,7 +8,7 @@
     position: absolute;
     top: -1rem;
     right: -1rem;
-    fill: $off-white;
+    fill: $pink;
     background-color: $off-black;
     border: solid .2rem $off-black;
     border-radius: 100%;
@@ -28,9 +28,8 @@
     text-align: center; 
     border-radius: .5rem;
     display: flex;
-    justify-content: center;
-    gap: 2rem;
-    border: .3rem solid $black-10; 
+    justify-content: space-around;
+    border: .3rem solid $pink; 
     
     & > div {
       display: flex;

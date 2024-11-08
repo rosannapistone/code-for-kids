@@ -1,16 +1,16 @@
 @import '../../Assets/styles/variables.scss';
-.challenge-easy {
+.challenge {
   color: $off-black;
   display: flex;
   flex-direction: column;
-  background: $soft-pink;
-  gap: 4rem;
+  background: $teal;
   padding: 4rem 4rem;
   & > .challenge-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
+    margin-top: 4rem;
     width: 100%;
     & > .css-wrapper,
     .html-wrapper {
@@ -18,7 +18,13 @@
       padding: .5rem; 
       box-sizing: border-box; 
       border-radius: .5rem;
-      width: calc(50% - 1rem);
+      width: 60%;
+      @media (max-width: 1250px) {
+        width: 80%;
+      }
+      @media (max-width: 1024px) {
+        width: 100%;
+      }
       & > .inner {
         box-sizing: border-box; 
         color: $off-black;
@@ -38,16 +44,14 @@
           font-family: 'IBMPlexSans'; 
         }
         & > .start-button {
-          width: fit-content;
-          padding: .5rem 1rem;
+          padding: .5rem 1.5rem;
           font-size: 1rem;
           color: $off-white;
-          height: 2rem;
+          height: 3rem;
           text-align:center;
           border: none;
           border-radius: 1rem;
-          background: $off-black;
-          // background-image: linear-gradient(to right, $red, $pink, $peach);  
+          background: $off-black; 
           &:hover {
             background-color: $off-white;
             color: $off-black;
@@ -55,44 +59,43 @@
         }
       }
     }
-    & > .button-container {
-      display: flex;
-      justify-content: space-between;
-      margin: 3rem 0;
-      width: 100%;
-      & > .back, 
-      .next {
-        display: flex;
-        justify-content: space-between;
-        border: none;
-        color: $off-white;
-        border-radius: .5rem;
-        padding: .5rem .8rem;
-        width: fit-content;
-        &:hover {
-          background-color: $pink;
-          color: $off-white;
-          fill: $off-white;
-        }
-      } 
-      & > .back {
-        background-color: $off-black;
-      }
-      & > .next {
-        background-color: $pink;
-      }
-    }
+    // & > .button-container {
+    //   display: flex;
+    //   justify-content: space-between;
+    //   margin: 3rem 0;
+    //   width: 100%;
+    //   & > .back, 
+    //   .next {
+    //     display: flex;
+    //     justify-content: space-between;
+    //     border: none;
+    //     color: $off-white;
+    //     border-radius: .5rem;
+    //     padding: .5rem 1.5rem;
+    //     &:hover {
+    //       background-color: $pink;
+    //       color: $off-white;
+    //       fill: $off-white;
+    //     }
+    //   } 
+    //   & > .back {
+    //     background-color: $off-black;
+    //   }
+    //   & > .next {
+    //     background-color: $pink;
+    //   }
+    // }
   }
   & > .button-container {
     display: flex;
     justify-content: space-between;
+    margin-top: 4rem;
     & > .back,
     .done {
-      width: fit-content;
-      padding: .5rem 1rem;
+      padding: .5rem 1.5rem;
       font-size: 1rem;
       color: #fff;
-      height: 2rem;
+      height: 3rem;
       text-align:center;
       border: none;
       border-radius: 1rem;

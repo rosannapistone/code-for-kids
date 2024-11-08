@@ -2,14 +2,13 @@
 
 .header {
   display: flex;
-  flex-direction: column;
-  height: 3rem;
+  height: 6rem;
   padding: 1rem 4rem;
-  align-items: end;
-  justify-content: center;
+  align-items: center;
+  justify-content: end;
   background-color: $off-white;
 
   img {
-    height: 3rem;
+    height: 5rem;
   }
 }

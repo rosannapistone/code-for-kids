@@ -9,19 +9,21 @@
   align-items: center;
 
   & > .heading {
+    color: $off-white;
+    font-size: 4rem;
     height: fit-content;
     overflow: hidden; 
     white-space: nowrap; 
     margin: 2rem auto;
     letter-spacing: .15em; 
     animation: 
-      typing 5s steps(50, end),
+      typing 3s steps(14, end),
       blink-caret .75s step-end infinite;
   }
   
   @keyframes typing {
     from { width: 0 }
-    to { width: 80% }
+    to { width: 50% }
   }
   
   @keyframes blink-caret {
@@ -42,12 +44,13 @@
       width: 100%;
     }
     
-    & > .challange-easy, 
-    .challange-hard,
-    .challange-game { 
+    & > .code-challenge, 
+    .website-challenge,
+    .game-challenge { 
       padding: .5rem; 
       box-sizing: border-box; 
       border-radius: .5rem;
+      height: 15rem;
       
       & > .inner { 
         height: 100%; 
@@ -57,7 +60,7 @@
         border-radius: .5rem;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        //justify-content: space-between;
 
         & > p {
           font-family: 'IBMPlexSans'; 
@@ -73,7 +76,7 @@
       } 
     } 
 
-    & > .challange-easy {
+    & > .code-challenge {
       background-color: $turquoise; 
       &:hover {
         background-color: $turquoise-30;
@@ -83,7 +86,7 @@
       }
     }
 
-    & > .challange-hard { 
+    & > .website-challenge { 
       background-color: $peach;
       &:hover {
         background-color: $peach-30;
@@ -93,7 +96,7 @@
       } 
     } 
 
-    & > .challange-game { 
+    & > .game-challenge { 
       background-color: $pink-110;
       &:hover {
         background-color: $pink-30;

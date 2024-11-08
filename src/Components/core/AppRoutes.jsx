@@ -2,17 +2,16 @@
 
 import { useRoutes } from 'react-router-dom';
 import { LandingPage } from '../../Views/landingpage/LandingPage';
-import { ChallengeEasy } from '../../Views/challenges/ChallengeEasy';
-import { ChallengeHard } from '../../Views/challenges/ChallengeHard';
 import { Games } from '../../Views/games/Games';
+import { WebsiteChallenge } from '../../Views/challenges/WebsiteChallenge';
+import { CodeChallenge } from '../../Views/challenges/CodeChallenge';
 
 export const AppRoutes = () => {
   const routes = useRoutes([
     { path: '/', element: <LandingPage /> },
-    { path: '/challenge-easy', element: <ChallengeEasy /> },
-    { path: '/challenge-hard', element: <ChallengeHard /> },
+    { path: '/code-challenge', element: <CodeChallenge /> },
+    { path: '/website-challenge', element: <WebsiteChallenge /> },
     { path: '/games', element: <Games /> },
-    { path: '/lightBot', file: 'lightbot.html' },
   ]);
 
   return routes;
