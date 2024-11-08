@@ -2,16 +2,19 @@
 
 .symbols-container {
   position: relative;
-  & > svg {
-    height: 2rem;
-    width: 2rem;
+  & > .icon-target-area {
     position: absolute;
-    top: -1rem;
-    right: -1rem;
-    fill: $pink;
-    background-color: $off-black;
-    border: solid .2rem $off-black;
-    border-radius: 100%;
+    top: -2rem;
+    right: -2rem;
+    padding: 1rem;
+    & > svg {
+      height: 2rem;
+      width: 2rem;
+      fill: $pink;
+      background-color: $off-black;
+      border: solid .2rem $off-black;
+      border-radius: 100%;
+    }
   }
 
   .symbols {
