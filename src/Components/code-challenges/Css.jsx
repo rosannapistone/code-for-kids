@@ -25,9 +25,12 @@ export const Css = () => {
                     positionen ersätt top och left till bottom och right.
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() => setShowHintOne((showHintOne) => !showHintOne)}
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen
@@ -56,9 +59,12 @@ export const Css = () => {
                     ett plusvärde.
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() => setShowHintTwo((showHintTwo) => !showHintTwo)}
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen
@@ -96,11 +102,14 @@ export const Css = () => {
                     att färgerna måste skrivas på engelska.
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() =>
                     setShowHintThree((showHintThree) => !showHintThree)
                   }
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen

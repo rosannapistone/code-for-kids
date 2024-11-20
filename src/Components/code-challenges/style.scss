@@ -47,8 +47,11 @@
             justify-content: end;
             width: 50%;
             gap: 1rem;
-            & > svg {
-              height: 3rem;
+            & > .icon-target-area {
+              padding: 1rem;
+              & > svg {
+                height: 3rem;
+              }
             }
             & > .hint {
               font-family: 'IBMPlexSans';

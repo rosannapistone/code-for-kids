@@ -28,9 +28,12 @@ export const Html = () => {
                     Exempelvis: {'<h1>Text</h1>'}
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() => setShowHintOne((showHintOne) => !showHintOne)}
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen
@@ -59,9 +62,12 @@ export const Html = () => {
                     {'<button>Skriv något här</button>'}
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() => setShowHintTwo((showHintTwo) => !showHintTwo)}
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen
@@ -89,11 +95,14 @@ export const Html = () => {
                     {'<a href="https://webbadressen">'}
                   </div>
                 ) : null}
-                <Illustration.LightBulbBlue
+                <div
+                  className="icon-target-area"
                   onClick={() =>
                     setShowHintThree((showHintThree) => !showHintThree)
                   }
-                />
+                >
+                  <Illustration.LightBulbBlue />
+                </div>
               </div>
             </div>
             <ReactCodepen
