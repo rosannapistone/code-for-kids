@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Illustration } from '../../Assets/illustrations/illustrations';
 import './style.scss';
 import ReactCodepen from 'react-codepen-embed';
 
 export const Css = () => {
+  const [showHintOne, setShowHintOne] = useState(false);
+  const [showHintTwo, setShowHintTwo] = useState(false);
+  const [showHintThree, setShowHintThree] = useState(false);
   return (
     <div className="code-challenge">
       <div className="challenge-wrapper">
@@ -14,7 +18,17 @@ export const Css = () => {
                 <li>UPPGIFT: flytta diamanten till det nedre högra hörnet</li>
                 <li>FIL(ER): CSS</li>
               </ul>
-              <Illustration.LightBulbBlue />
+              <div className="hint-container">
+                {showHintOne ? (
+                  <div className="hint">
+                    Blommans position har nu top: 0 och left: 0, för att ändra
+                    positionen ersätt top och left till bottom och right.
+                  </div>
+                ) : null}
+                <Illustration.LightBulbBlue
+                  onClick={() => setShowHintOne((showHintOne) => !showHintOne)}
+                />
+              </div>
             </div>
             <ReactCodepen
               hash="gOVPzMQ"
@@ -34,7 +48,18 @@ export const Css = () => {
                 </li>
                 <li>FIL(ER): CSS</li>
               </ul>
-              <Illustration.LightBulbBlue />
+              <div className="hint-container">
+                {showHintTwo ? (
+                  <div className="hint">
+                    Yin och yangen roterar nu från -360deg, alltså -360 grader,
+                    för att den ska ändra riktigt behöver graderna ändras till
+                    ett plusvärde.
+                  </div>
+                ) : null}
+                <Illustration.LightBulbBlue
+                  onClick={() => setShowHintTwo((showHintTwo) => !showHintTwo)}
+                />
+              </div>
             </div>
             <ReactCodepen
               hash="mdNPExM"
@@ -49,15 +74,34 @@ export const Css = () => {
               <ul>
                 <p>3/3</p>
                 <li>
-                  UPPGIFT: ändra den nedre regnbågens färger så den ser ut som
-                  den övre.
+                  UPPGIFT: ändra den nedre regnbågens färger så den liknar den
+                  övre.
                   <br></br>
-                  Använd färgerna: röd, orange, gul, grön, blå, indigo och
-                  violett.{' '}
+                </li>
+                <li>
+                  <a
+                    href="https://www.w3.org/wiki/CSS/Properties/color/keywords"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Lista på färger
+                  </a>
                 </li>
                 <li>FIL(ER): CSS</li>
               </ul>
-              <Illustration.LightBulbBlue />
+              <div className="hint-container">
+                {showHintThree ? (
+                  <div className="hint">
+                    Ändra namnet på färgerna som anges vid box-shadow. Kom ihåg
+                    att färgerna måste skrivas på engelska.
+                  </div>
+                ) : null}
+                <Illustration.LightBulbBlue
+                  onClick={() =>
+                    setShowHintThree((showHintThree) => !showHintThree)
+                  }
+                />
+              </div>
             </div>
             <ReactCodepen
               hash="VwoajOz"

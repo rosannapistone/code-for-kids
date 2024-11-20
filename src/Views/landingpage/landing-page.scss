@@ -7,28 +7,11 @@
   gap: 4rem;
   padding: 4rem 4rem;
   align-items: center;
+  background-color: $teal;
 
   & > .heading {
     color: $off-white;
     font-size: 4rem;
-    height: fit-content;
-    overflow: hidden; 
-    white-space: nowrap; 
-    margin: 2rem auto;
-    letter-spacing: .15em; 
-    animation: 
-      typing 3s steps(14, end),
-      blink-caret .75s step-end infinite;
-  }
-  
-  @keyframes typing {
-    from { width: 0 }
-    to { width: 50% }
-  }
-  
-  @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: $off-black; }
   }
 
   & > .challange-wrapper {
@@ -43,27 +26,27 @@
     @media (max-width: 1024px) {
       width: 100%;
     }
-    
-    & > .code-challenge, 
+
+    & > .code-challenge,
     .website-challenge,
-    .game-challenge { 
-      padding: .5rem; 
-      box-sizing: border-box; 
-      border-radius: .5rem;
+    .game-challenge {
+      padding: 0.5rem;
+      box-sizing: border-box;
+      border-radius: 0.5rem;
       height: 15rem;
-      
-      & > .inner { 
-        height: 100%; 
-        box-sizing: border-box; 
-        padding: 1rem; 
-        text-align: center; 
-        border-radius: .5rem;
+
+      & > .inner {
+        height: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
+        text-align: center;
+        border-radius: 0.5rem;
         display: flex;
         flex-direction: column;
         //justify-content: space-between;
 
         & > p {
-          font-family: 'IBMPlexSans'; 
+          font-family: 'IBMPlexSans';
         }
 
         & > .age {
@@ -73,36 +56,36 @@
             height: 2rem;
           }
         }
-      } 
-    } 
+      }
+    }
 
     & > .code-challenge {
-      background-color: $turquoise; 
+      background-color: $turquoise;
       &:hover {
         background-color: $turquoise-30;
       }
       & > .inner {
-        border: .3rem solid $teal;
+        border: 0.3rem solid $teal;
       }
     }
 
-    & > .website-challenge { 
+    & > .website-challenge {
       background-color: $peach;
       &:hover {
         background-color: $peach-30;
       }
-      & > .inner { 
-        border: .3rem solid $red; 
-      } 
-    } 
+      & > .inner {
+        border: 0.3rem solid $red;
+      }
+    }
 
-    & > .game-challenge { 
+    & > .game-challenge {
       background-color: $pink-110;
       &:hover {
         background-color: $pink-30;
       }
-      & > .inner { 
-        border: .3rem solid $pink; 
+      & > .inner {
+        border: 0.3rem solid $pink;
         align-items: center;
         & > .age {
           margin-left: auto;
@@ -111,8 +94,8 @@
           display: flex;
           justify-content: space-between;
           border: none;
-          border-radius: .5rem;
-          padding: .5rem .8rem;
+          border-radius: 0.5rem;
+          padding: 0.5rem 0.8rem;
           width: fit-content;
           &:hover {
             background-color: $pink;
@@ -124,7 +107,7 @@
             margin-left: 1rem;
           }
         }
-      } 
-    } 
+      }
+    }
   }
 }

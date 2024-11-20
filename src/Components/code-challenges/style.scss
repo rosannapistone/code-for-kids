@@ -13,39 +13,56 @@
     width: 100%;
     & > .challenge {
       background-color: $off-black;
-      padding: .5rem; 
-      box-sizing: border-box; 
-      border-radius: .5rem;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      border-radius: 0.5rem;
       width: 100%;
       & > .inner {
-        box-sizing: border-box; 
+        box-sizing: border-box;
         color: $off-white;
-        padding: 1rem; 
-        border-radius: .5rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
         display: flex;
         flex-direction: column;
-        border: .3rem solid $off-white; 
+        border: 0.3rem solid $off-white;
         & > .instructions {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin: 4rem 1rem 0 0; 
-        
+          margin: 4rem 1rem 0 0;
+
           & > ul {
+            width: 50%;
             & > li {
-              font-family: 'IBMPlexSans'; 
-              margin: .5rem 0;
+              font-family: 'IBMPlexSans';
+              margin: 0.5rem 0;
+              & > a {
+                color: $off-white;
+                font-weight: 800;
+              }
             }
           }
-          & > svg {
-            height: 3rem;
+          & > .hint-container {
+            display: flex;
+            justify-content: end;
+            width: 50%;
+            gap: 1rem;
+            & > svg {
+              height: 3rem;
+            }
+            & > .hint {
+              font-family: 'IBMPlexSans';
+              width: 80%;
+              background: yellow;
+              padding: 1rem;
+              color: $off-black;
+            }
           }
         }
 
         & > .cp_embed_wrapper {
           margin: 1rem 0 0 0;
         }
-       
       }
     }
   }
